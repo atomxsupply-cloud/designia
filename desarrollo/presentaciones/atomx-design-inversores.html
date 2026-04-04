@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATOM X Design Inversores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --card: #111111;
+      --paper: #0c0c0c;
+      --border: #1f1f1f;
+      --accent: #ff4d00;
+      --accent-dim: rgba(255, 77, 0, 0.12);
+      --accent-soft: rgba(255, 77, 0, 0.3);
+      --text: #f0f0f0;
+      --muted: #8b8b8b;
+      --dim: #4d4d4d;
+      --green: #00e676;
+      --yellow: #ffd600;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "DM Sans", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 77, 0, 0.15), transparent 18%),
+        radial-gradient(circle at 80% 10%, rgba(255, 214, 0, 0.08), transparent 18%),
+        linear-gradient(180deg, #090909 0%, #111111 100%);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 15mm 13mm;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at center, black 36%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .topbar,
+    .hero,
+    .two-col,
+    .three-col,
+    .stats {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero,
+    .two-col {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+
+    .three-col,
+    .stats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .brand,
+    .eyebrow,
+    .tiny,
+    .tag {
+      font-family: "Space Mono", monospace;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .atom {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--accent-soft);
+      background: radial-gradient(circle, rgba(255, 77, 0, 0.16), rgba(255, 77, 0, 0.02));
+      position: relative;
+      box-shadow: inset 0 0 18px rgba(255, 77, 0, 0.16);
+    }
+
+    .atom::before,
+    .atom::after {
+      content: "";
+      position: absolute;
+      width: 34px;
+      height: 14px;
+      border: 1px solid rgba(255, 77, 0, 0.28);
+      border-radius: 50%;
+    }
+
+    .atom::after {
+      transform: rotate(60deg);
+    }
+
+    .core {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 77, 0, 0.8);
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .panel,
+    .mini,
+    .stat,
+    .phone,
+    .quote,
+    .line {
+      background: rgba(17, 17, 17, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel,
+    .phone,
+    .quote {
+      padding: 18px;
+    }
+
+    .mini,
+    .stat,
+    .line {
+      padding: 16px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 36px;
+      line-height: 0.98;
+      max-width: 11ch;
+      margin-top: 10px;
+    }
+
+    h2 {
+      font-size: 28px;
+      line-height: 1.02;
+      max-width: 15ch;
+      margin-top: 8px;
+    }
+
+    h3 {
+      font-size: 17px;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+      margin-top: 14px;
+      max-width: 64ch;
+    }
+
+    .body {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .tag {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-soft);
+      font-size: 10px;
+    }
+
+    .stats {
+      margin-top: 6px;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--yellow);
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .stat span,
+    .mini p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .phone {
+      min-height: 430px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 77, 0, 0.18), transparent 26%),
+        linear-gradient(180deg, #0b0b0b 0%, #111111 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-shot {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      display: block;
+      background: #000;
+      box-shadow: var(--shadow);
+      object-fit: cover;
+      object-position: top center;
+      max-height: 470px;
+    }
+
+    .phone-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .phone-screen {
+      display: grid;
+      gap: 12px;
+    }
+
+    .orbit {
+      height: 120px;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .orbit .ring,
+    .orbit .ring-two,
+    .orbit .ring-three {
+      position: absolute;
+      width: 110px;
+      height: 42px;
+      border: 1px solid rgba(255, 77, 0, 0.22);
+      border-radius: 50%;
+    }
+
+    .orbit .ring-two { transform: rotate(60deg); }
+    .orbit .ring-three { transform: rotate(120deg); }
+
+    .orbit .nucleus {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      font-family: "Space Mono", monospace;
+      font-size: 11px;
+      background: rgba(255, 77, 0, 0.08);
+    }
+
+    .bubble,
+    .result,
+    .metric-line {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .swatch {
+      height: 40px;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .swatch::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 6px;
+      bottom: 4px;
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.84);
+      font-family: "Space Mono", monospace;
+      letter-spacing: 0.08em;
+    }
+
+    .mini {
+      min-height: 148px;
+    }
+
+    .quote {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #f5d7c8;
+      background: rgba(255, 77, 0, 0.08);
+      border-color: rgba(255, 77, 0, 0.22);
+    }
+
+    .line {
+      display: grid;
+      gap: 6px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.65;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>ATOM X Design</span>
+      </div>
+      <div class="tiny">Presentación para inversores y socios estratégicos</div>
+    </div>
+
+    <div class="hero">
+      <article class="panel">
+        <div class="eyebrow">IA para tattoo retail</div>
+        <h1>Una capa de IA vertical para adueñarse del momento de recomendación en tattoo retail.</h1>
+        <p class="lead">ATOM X Design convierte una referencia visual en una recomendación clara, premium y comprable dentro de la tienda. La oportunidad no es solo técnica: es de marca, de conversión y de expansión futura hacia datos, stock y automatización comercial.</p>
+        <div class="stats">
+          <div class="stat">
+            <strong>1 flujo</strong>
+            <span>Diseño, tono de piel, análisis y recomendación en una sola experiencia de mostrador.</span>
+          </div>
+          <div class="stat">
+            <strong>2 ventajas</strong>
+            <span>Es defendible como producto de nicho y fácil de entender como herramienta comercial de alto valor percibido.</span>
+          </div>
+          <div class="stat">
+            <strong>3 capas</strong>
+            <span>Imagen, piel y catálogo: una estructura clara para crecer desde UX hasta datos y monetización.</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <div class="eyebrow" style="margin-bottom:10px;">Producto real en funcionamiento</div>
+        <img class="app-shot" src="./app-full.png" alt="Captura completa de la aplicación ATOM X Design">
+        <p class="lead" style="font-size:13px;margin-top:12px;">La primera lectura de valor es inmediata: app real, identidad propia y experiencia tangible. No es un concepto vacío ni una simple promesa tecnológica.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>Problema</span>
+      </div>
+      <div class="tiny">Página 2</div>
+    </div>
+
+    <div class="two-col">
+      <article class="panel">
+        <span class="tag">El problema real</span>
+        <h2>Elegir color para tatuaje sigue siendo demasiado manual, subjetivo y poco visible.</h2>
+        <p class="lead">Muchos artistas y tiendas toman decisiones correctas por experiencia, pero sin una herramienta que haga visible esa lógica al cliente. Eso limita la percepción de valor, la facilidad de venta y la capacidad de escalar la recomendación dentro del negocio.</p>
+        <div class="quote">El momento de recomendación tiene muchísimo valor, pero normalmente se pierde en una conversación que no deja huella.</div>
+      </article>
+
+      <div class="three-col">
+        <div class="mini">
+          <h3>Para tatuadores</h3>
+          <p>Se pierde tiempo defendiendo qué color funcionará mejor, qué alternativa curará mejor y por qué una referencia no siempre debe copiarse tal cual.</p>
+        </div>
+        <div class="mini">
+        <h3>Para el canal retail</h3>
+        <p>La recomendación suele ser verbal y poco escalable. Eso impide convertir experiencia, criterio y branding en una ventaja comercial repetible.</p>
+        </div>
+        <div class="mini">
+        <h3>Para el cliente final</h3>
+        <p>La distancia entre inspiración visual y producto real es demasiado abstracta. Esa fricción reduce confianza y limita conversión.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>Solución</span>
+      </div>
+      <div class="tiny">Página 3</div>
+    </div>
+
+    <span class="tag">Qué hace ATOM X Design</span>
+    <h2>Tres lecturas convierten una imagen en una recomendación comprable.</h2>
+
+    <div class="three-col">
+      <div class="panel">
+        <h3>1. Lee el diseño</h3>
+        <p class="body">La app analiza colores dominantes y el estilo visual del tatuaje. La recomendación empieza en la referencia real del cliente, no en una lista genérica de productos.</p>
+      </div>
+      <div class="panel">
+        <h3>2. Lee la piel</h3>
+        <p class="body">ATOM X incorpora lógica de tono de piel y comportamiento del color en tatuaje. No recomienda solo por parecido RGB, sino por viabilidad real.</p>
+      </div>
+      <div class="panel">
+        <h3>3. Lee el catálogo</h3>
+        <p class="body">La salida final se expresa en tintas Eternal concretas, lo que convierte la inteligencia visual en una palanca comercial directamente monetizable.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="line">
+        <h3>Por qué no es una IA genérica</h3>
+        <ul>
+          <li>Habla en lenguaje tattoo, no en lenguaje técnico abstracto.</li>
+          <li>Tiene en cuenta piel, saturación, contraste, sombras y curación.</li>
+          <li>Entrega una respuesta utilizable por tienda y artista con una lógica fácilmente productizable en más capas futuras.</li>
+        </ul>
+      </div>
+      <div class="line">
+        <h3>Estado actual del producto</h3>
+        <ul>
+          <li>App real ya creada para tablet en tienda.</li>
+          <li>Subida de imagen y extracción de color ya funcionando.</li>
+          <li>Selector Fitzpatrick integrado.</li>
+          <li>Recomendación de tintas Eternal impulsada por IA.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>Experiencia</span>
+      </div>
+      <div class="tiny">Página 4</div>
+    </div>
+
+    <div class="two-col">
+      <article class="panel">
+        <span class="tag">Diseño de producto</span>
+        <h2>La experiencia ya tiene el lenguaje visual de ATOM X.</h2>
+        <p class="lead">Oscura, energética, directa y pensada para mostrador. La app no parece un software frío. Parece una herramienta creada para el mundo tattoo, con una identidad clara y una interacción que transmite marca.</p>
+        <div class="line">
+          <h3>Qué transmite visualmente</h3>
+          <ul>
+            <li>Universo ATOM X reconocible desde el primer segundo.</li>
+            <li>Estética premium compatible con tienda y estudio.</li>
+          <li>Experiencia suficientemente diferenciada como para actuar también como activo de marca.</li>
+          </ul>
+        </div>
+      </article>
+
+      <div class="three-col">
+        <div class="mini">
+          <h3>Tablet first</h3>
+          <p>Se usa rápido delante del cliente. No necesita formación compleja ni una explicación larga para arrancar.</p>
+        </div>
+        <div class="mini">
+          <h3>Asiste al artista</h3>
+          <p>No sustituye criterio. Refuerza el criterio del tatuador y le ayuda a hacerlo visible frente al cliente.</p>
+        </div>
+        <div class="mini">
+        <h3>Mejora la percepción</h3>
+        <p>La tienda deja de parecer solo un punto de venta para convertirse en un sistema de recomendación especializado y memorable.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote">La herramienta no reemplaza la autoridad artística. La hace más visible, más entendible y más vendible.</div>
+  </section>
+
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>Valor de negocio</span>
+      </div>
+      <div class="tiny">Página 5</div>
+    </div>
+
+    <span class="tag">Por qué interesa</span>
+    <h2>Un solo producto abre valor en marca, conversión y futuras automatizaciones.</h2>
+
+    <div class="stats">
+      <div class="stat">
+        <strong>Más defendible</strong>
+        <span>porque resuelve un caso de uso específico con identidad de categoría y lenguaje propio.</span>
+      </div>
+      <div class="stat">
+        <strong>Más monetizable</strong>
+        <span>porque el output está conectado a producto real y al momento exacto de recomendación comercial.</span>
+      </div>
+      <div class="stat">
+        <strong>Más ampliable</strong>
+        <span>porque puede crecer hacia stock, CRM, histórico de consultas y automatización sin romper la UX central.</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <article class="panel">
+        <h3>Para inversores</h3>
+        <p class="body">ATOM X Design no compite como otra IA más. Compite como una experiencia vertical específica de nicho, con identidad, lógica de industria y una conexión comercial directa. Eso eleva diferenciación y defendibilidad.</p>
+      </article>
+      <article class="panel">
+        <h3>Para el negocio</h3>
+        <p class="body">Puede actuar como producto, como capa de marca y como punto de entrada a futuras líneas de datos y automatización comercial dentro del ecosistema ATOM X.</p>
+      </article>
+    </div>
+
+    <div class="three-col">
+      <div class="mini">
+        <h3>Corto plazo</h3>
+        <p>Herramienta de recomendación premium para tienda y demostración comercial con una propuesta de valor muy visible.</p>
+      </div>
+      <div class="mini">
+        <h3>Medio plazo</h3>
+        <p>Conexión con stock real, productos disponibles y lógica comercial más precisa dentro del flujo principal.</p>
+      </div>
+      <div class="mini">
+        <h3>Largo plazo</h3>
+        <p>Historial, perfilado, envío por WhatsApp, seguimiento de consultas y automatización comercial alrededor del artista y del cliente.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="topbar">
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <span>Cierre</span>
+      </div>
+      <div class="tiny">Página 6</div>
+    </div>
+
+    <span class="tag">Mensaje final</span>
+    <h2>ATOM X puede adueñarse del momento más memorable de la recomendación en tattoo retail.</h2>
+    <p class="lead">La propuesta ya demuestra lo importante: identidad visual fuerte, lógica técnica específica del tatuaje y conexión clara entre inspiración visual y producto real. La oportunidad no es solo analizar imágenes. La oportunidad es hacer que ese análisis se sienta inequívocamente ATOM X.</p>
+
+    <div class="two-col">
+      <div class="line">
+        <h3>Lo que demuestra esta versión</h3>
+        <ul>
+          <li>Que el producto ya tiene una forma tangible y enseñable.</li>
+          <li>Que existe una propuesta diferencial dentro de un nicho claro.</li>
+          <li>Que el valor combina UX, marca y salida comercial real.</li>
+          <li>Que hay una ruta clara de ampliación futura.</li>
+        </ul>
+      </div>
+      <div class="line">
+        <h3>Lectura estratégica</h3>
+        <ul>
+          <li>Presentarlo como producto vertical defendible.</li>
+          <li>Apoyar el deck con demo en tablet y narrativa de marca.</li>
+          <li>Explicar ATOM X Design como capa tecnológica y comercial del ecosistema.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote">ATOM X Design es el punto donde se unen inspiración visual, criterio técnico y experiencia de venta dentro del universo tattoo.</div>
+  </section>
+</body>
+</html>

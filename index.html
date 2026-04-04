@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ATOM X Colors">
+<meta name="theme-color" content="#0a0a0a">
+<title>ATOM X · Color Picker</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --bg:#0a0a0a; --card:#111; --border:#1e1e1e;
+  --accent:#ff4d00; --accent-dim:rgba(255,77,0,0.1); --accent-soft:rgba(255,77,0,0.3);
+  --text:#f0f0f0; --muted:#888; --dim:#444;
+  --green:#00e676; --yellow:#ffd600;
+}
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh; max-width:430px; margin:0 auto;
+  overflow-x:hidden;
+}
+
+/* HEADER */
+.header {
+  padding:16px 20px 12px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo-text { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; letter-spacing:3px; color:var(--accent); }
+.logo-sub { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:2px; margin-top:2px; }
+.header-badge {
+  font-family:'Space Mono',monospace; font-size:8px;
+  color:var(--accent); background:var(--accent-dim);
+  border:1px solid var(--accent-soft);
+  padding:3px 8px; border-radius:20px; letter-spacing:1px;
+}
+.counter-wrap {
+  text-align:center; padding:8px 20px 0;
+  font-family:'Space Mono',monospace;
+}
+.counter-num {
+  font-size:18px; font-weight:700; color:#ffd600;
+  letter-spacing:2px;
+  text-shadow:0 0 10px rgba(255,214,0,0.4);
+}
+.counter-label {
+  font-size:8px; color:var(--dim);
+  letter-spacing:2px; text-transform:uppercase;
+  margin-top:1px;
+}
+
+/* ATOMX CHARACTER */
+.atomx-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  padding:28px 20px 10px;
+}
+.atomx-svg-wrap {
+  position:relative; width:110px; height:110px;
+  margin-bottom:0;
+}
+.atomx-svg-wrap svg {
+  width:110px; height:110px;
+  filter:drop-shadow(0 0 12px rgba(255,77,0,0.35));
+  transition:filter 0.4s;
+}
+.atomx-svg-wrap.thinking svg {
+  filter:drop-shadow(0 0 18px rgba(255,200,0,0.5));
+}
+.atomx-svg-wrap.results svg {
+  filter:drop-shadow(0 0 22px rgba(255,77,0,0.7));
+  animation:pop 0.4s ease;
+}
+@keyframes pop {
+  0%  { transform:scale(1); }
+  50% { transform:scale(1.12); }
+  100%{ transform:scale(1); }
+}
+
+/* Orbits */
+.orbit {
+  transform-origin:55px 55px;
+  animation:orbitSpin 3s linear infinite;
+}
+.orbit2 { animation-duration:4s; animation-direction:reverse; }
+.orbit3 { animation-duration:5s; }
+.atomx-svg-wrap.thinking .orbit  { animation-duration:1s; }
+.atomx-svg-wrap.thinking .orbit2 { animation-duration:1.3s; }
+.atomx-svg-wrap.thinking .orbit3 { animation-duration:1.7s; }
+.atomx-svg-wrap.results .orbit   { animation-duration:0.6s; }
+.atomx-svg-wrap.results .orbit2  { animation-duration:0.8s; }
+.atomx-svg-wrap.results .orbit3  { animation-duration:1s; }
+@keyframes orbitSpin { to { transform:rotate(360deg); } }
+
+/* BUBBLE */
+.atomx-bubble {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px 18px 18px 4px;
+  padding:12px 16px;
+  font-size:14px; font-weight:500;
+  line-height:1.4;
+  max-width:300px; text-align:left;
+  margin-top:14px;
+  position:relative;
+  transition:all 0.3s;
+  min-height:44px;
+}
+.atomx-bubble.highlight {
+  border-color:var(--accent-soft);
+  background:var(--accent-dim);
+}
+.bubble-text { transition:opacity 0.2s; }
+.bubble-text.fade { opacity:0; }
+
+/* CONTENT */
+.content { padding:12px 16px 40px; }
+
+/* SKIN SELECTOR */
+.skin-selector {
+  margin-bottom:20px;
+}
+.skin-label {
+  font-family:'Space Mono',monospace; font-size:9px;
+  color:var(--dim); letter-spacing:2px; margin-bottom:10px;
+  display:block;
+}
+.skin-options {
+  display:flex; gap:8px;
+}
+.skin-btn {
+  flex:1; padding:8px 4px; border-radius:10px;
+  border:1px solid var(--border); background:var(--card);
+  cursor:pointer; transition:all 0.2s;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.skin-btn.active { border-color:var(--accent); background:var(--accent-dim); }
+.skin-btn.locked { pointer-events:none; opacity:0.5; }
+.skin-btn.active.locked { opacity:1; }
+.skin-circle {
+  width:22px; height:22px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.15);
+}
+.skin-name { font-size:8px; color:var(--muted); font-family:'Space Mono',monospace; text-align:center; letter-spacing:0.5px; }
+.skin-btn.active .skin-name { color:var(--accent); }
+.skin-lock-hint { font-size:9px; color:var(--dim); text-align:center; margin-top:6px; font-family:'Space Mono',monospace; display:none; }
+.skin-lock-hint.visible { display:block; }
+
+/* CONSENT OVERLAY */
+.consent-overlay {
+  position:fixed; inset:0; z-index:999;
+  background:rgba(0,0,0,0.96);
+  display:flex; align-items:flex-end;
+  padding:0;
+}
+.consent-box {
+  background:#111;
+  border-top:1px solid #1e1e1e;
+  border-radius:24px 24px 0 0;
+  padding:28px 24px 40px;
+  width:100%;
+  max-height:92vh;
+  overflow-y:auto;
+}
+.consent-logo { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; letter-spacing:3px; color:#ff4d00; margin-bottom:4px; }
+.consent-title { font-size:20px; font-weight:700; margin:12px 0 10px; }
+.consent-text { font-size:13px; color:#888; line-height:1.6; margin-bottom:20px; }
+.consent-text a { color:#ff4d00; }
+.consent-toggle {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 0; border-bottom:1px solid #1e1e1e;
+}
+.consent-toggle-info strong { display:block; font-size:14px; margin-bottom:2px; }
+.consent-toggle-info span { font-size:12px; color:#666; }
+.toggle-switch { position:relative; width:44px; height:26px; flex-shrink:0; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0; cursor:pointer;
+  background:#333; border-radius:26px; transition:0.3s;
+}
+.toggle-slider::before {
+  content:''; position:absolute;
+  width:20px; height:20px; left:3px; bottom:3px;
+  background:#fff; border-radius:50%; transition:0.3s;
+}
+input:checked + .toggle-slider { background:#ff4d00; }
+input:checked + .toggle-slider::before { transform:translateX(18px); }
+input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
+.consent-required-tag {
+  font-family:'Space Mono',monospace; font-size:9px;
+  color:#ff4d00; background:rgba(255,77,0,0.1);
+  border:1px solid rgba(255,77,0,0.2);
+  padding:2px 8px; border-radius:20px; margin-left:8px;
+  vertical-align:middle;
+}
+.consent-btn-accept {
+  width:100%; padding:16px; margin-top:24px;
+  background:#ff4d00; border:none; border-radius:14px;
+  color:#fff; font-size:15px; font-weight:700;
+  font-family:'Space Mono',monospace; letter-spacing:2px;
+  cursor:pointer; transition:opacity 0.2s;
+}
+.consent-btn-accept:active { opacity:0.85; }
+.consent-btn-reject {
+  width:100%; padding:12px; margin-top:10px;
+  background:transparent; border:1px solid #1e1e1e; border-radius:14px;
+  color:#666; font-size:13px; font-weight:500;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer; transition:color 0.2s;
+}
+.consent-btn-reject:hover { color:#888; }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border:2px dashed var(--border);
+  border-radius:16px; padding:28px 20px;
+  text-align:center; cursor:pointer;
+  transition:all 0.2s; position:relative;
+  overflow:hidden; margin-bottom:16px;
+}
+.upload-zone:active { border-color:var(--accent); background:var(--accent-dim); }
+.upload-zone.has-image { border-style:solid; border-color:var(--accent); padding:0; }
+.upload-icon { font-size:32px; margin-bottom:8px; }
+.upload-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+.upload-sub { font-size:11px; color:var(--muted); }
+#file-input { display:none; }
+#preview-img { width:100%; border-radius:14px; display:none; max-height:280px; object-fit:cover; }
+
+/* ANALYZE BTN */
+.analyze-btn {
+  width:100%; padding:15px;
+  background:var(--accent); border:none; border-radius:14px;
+  color:#fff; font-size:15px; font-weight:700;
+  font-family:'Space Mono',monospace; letter-spacing:2px;
+  cursor:pointer; transition:all 0.2s;
+  display:none; margin-bottom:16px;
+}
+.analyze-btn:active { transform:scale(0.97); }
+.analyze-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+/* LOADING */
+.loading { display:none; padding:20px 0 10px; }
+.loading-steps { display:flex; flex-direction:column; gap:6px; }
+.loading-step {
+  font-size:12px; color:var(--dim);
+  padding:10px 14px; border-radius:10px;
+  border:1px solid var(--border); background:var(--card);
+  transition:all 0.3s;
+}
+.loading-step.active {
+  color:var(--accent); border-color:var(--accent-soft);
+  background:var(--accent-dim);
+}
+
+/* RESULTS */
+.results { display:none; }
+
+.section-title {
+  font-family:'Space Mono',monospace; font-size:9px;
+  color:var(--dim); letter-spacing:3px; text-transform:uppercase;
+  margin-bottom:12px; margin-top:20px;
+}
+
+/* SKIN ALERT */
+.skin-alert {
+  background:rgba(255,214,0,0.08); border:1px solid rgba(255,214,0,0.25);
+  border-radius:12px; padding:11px 14px; margin-bottom:16px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.skin-alert-icon { font-size:16px; flex-shrink:0; }
+.skin-alert-text { font-size:12px; color:var(--muted); line-height:1.5; }
+
+/* COLOR SWATCHES */
+.colors-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:8px; margin-bottom:8px;
+}
+.color-swatch {
+  border-radius:12px; overflow:hidden;
+  border:1px solid var(--border); background:var(--card);
+}
+.swatch-color { height:56px; width:100%; }
+.swatch-info { padding:7px; }
+.swatch-name { font-size:10px; font-weight:700; margin-bottom:2px; }
+.swatch-hex { font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); }
+.swatch-pct { font-family:'Space Mono',monospace; font-size:8px; color:var(--accent); margin-top:1px; }
+
+/* TINTA CARDS */
+.tinta-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:14px 16px; margin-bottom:10px;
+}
+.tinta-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.tinta-left { display:flex; gap:12px; align-items:center; }
+.tinta-color-dot { width:34px; height:34px; border-radius:10px; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); }
+.tinta-nombre { font-size:13px; font-weight:700; margin-bottom:2px; }
+.tinta-marca { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.tinta-precio { font-size:16px; font-weight:700; color:var(--accent); }
+.tinta-precio-sub { font-size:9px; color:var(--dim); text-align:right; font-family:'Space Mono',monospace; }
+.tinta-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.tag {
+  font-size:9px; font-family:'Space Mono',monospace;
+  padding:3px 9px; border-radius:20px; letter-spacing:1px;
+}
+.tag-marca { background:rgba(41,121,255,0.1); color:#2979ff; border:1px solid rgba(41,121,255,0.3); }
+.tag-uso { background:rgba(0,230,118,0.1); color:var(--green); border:1px solid rgba(0,230,118,0.3); }
+.tinta-razon { font-size:11px; color:var(--muted); line-height:1.5; }
+.comprar-btn {
+  width:100%; padding:10px; margin-top:10px;
+  background:transparent; border:1px solid var(--accent);
+  border-radius:10px; color:var(--accent);
+  font-family:'Space Mono',monospace; font-size:10px;
+  font-weight:700; letter-spacing:2px; cursor:pointer; transition:all 0.2s;
+}
+.comprar-btn:active { background:var(--accent); color:#fff; }
+
+/* RESUMEN */
+.resumen-card {
+  background:var(--accent-dim); border:1px solid var(--accent-soft);
+  border-radius:14px; padding:16px; margin-bottom:16px; margin-top:8px;
+}
+.resumen-title { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:12px; }
+.resumen-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+.resumen-total {
+  display:flex; justify-content:space-between; font-size:16px; font-weight:700;
+  border-top:1px solid var(--accent-soft); padding-top:10px; margin-top:6px; color:var(--accent);
+}
+
+/* RESET */
+.reset-btn {
+  width:100%; padding:14px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; color:var(--muted);
+  font-family:'Space Mono',monospace; font-size:10px;
+  letter-spacing:2px; cursor:pointer; margin-top:4px;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.results > * { animation:fadeUp 0.3s ease both; }
+.results > *:nth-child(2) { animation-delay:0.06s; }
+.results > *:nth-child(3) { animation-delay:0.12s; }
+.results > *:nth-child(4) { animation-delay:0.18s; }
+.results > *:nth-child(5) { animation-delay:0.24s; }
+</style>
+</head>
+<body>
+
+<!-- CONSENT OVERLAY -->
+<div class="consent-overlay" id="consentOverlay" style="display:none">
+  <div class="consent-box">
+    <div class="consent-logo">ATOM X</div>
+    <div class="consent-title">Antes de empezar 👋</div>
+    <p class="consent-text">
+      Esta app analiza imágenes de diseños de tatuaje usando inteligencia artificial para recomendarte las tintas Eternal adecuadas.
+      Necesitamos tu consentimiento para algunas funciones. Puedes aceptar todo o elegir qué permites.
+    </p>
+
+    <div class="consent-toggle">
+      <div class="consent-toggle-info">
+        <strong>Funciones esenciales <span class="consent-required-tag">NECESARIO</span></strong>
+        <span>Análisis de imagen, recomendaciones de tintas. Sin esto la app no funciona.</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" checked disabled>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="consent-toggle">
+      <div class="consent-toggle-info">
+        <strong>Guardar historial de análisis</strong>
+        <span>Almacenar tus resultados para consultarlos más adelante.</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="consentHistory">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="consent-toggle">
+      <div class="consent-toggle-info">
+        <strong>Notificaciones</strong>
+        <span>Avisos sobre nuevas tintas, ofertas o novedades de ATOM X.</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="consentNotifications">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <p class="consent-text" style="margin-top:20px;font-size:12px">
+      Al continuar aceptas nuestros
+      <a href="/legal/terminos.html" target="_blank">Términos y Condiciones</a>,
+      <a href="/legal/privacidad.html" target="_blank">Política de Privacidad</a> y
+      <a href="/legal/cookies.html" target="_blank">Política de Cookies</a>.
+      Puedes cambiar tus preferencias en cualquier momento desde Ajustes.
+    </p>
+
+    <button class="consent-btn-accept" onclick="acceptConsent()">ACEPTAR Y CONTINUAR</button>
+    <button class="consent-btn-reject" onclick="rejectOptional()">Solo funciones esenciales</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="logo-text">ATOM X</div>
+    <div class="logo-sub">COLOR MATCHER</div>
+  </div>
+  <div class="header-badge">⚡ atomxsupply.com</div>
+</div>
+
+<!-- CONTADOR -->
+<div class="counter-wrap">
+  <div class="counter-num" id="counter-num">0</div>
+  <div class="counter-label">tatuadores que hemos ayudado con su diseño</div>
+</div>
+
+<!-- ATOMX CHARACTER -->
+<div class="atomx-wrap">
+  <div class="atomx-svg-wrap" id="atomx-char">
+    <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+      <!-- Orbit 1 -->
+      <g class="orbit orbit1">
+        <ellipse cx="55" cy="55" rx="48" ry="18" fill="none" stroke="rgba(255,77,0,0.25)" stroke-width="1.2"/>
+        <circle cx="103" cy="55" r="4" fill="#ff4d00"/>
+      </g>
+      <!-- Orbit 2 -->
+      <g class="orbit orbit2" style="transform:rotate(60deg);transform-origin:55px 55px">
+        <ellipse cx="55" cy="55" rx="48" ry="18" fill="none" stroke="rgba(255,77,0,0.2)" stroke-width="1.2"/>
+        <circle cx="103" cy="55" r="3.5" fill="#ff7733"/>
+      </g>
+      <!-- Orbit 3 -->
+      <g class="orbit orbit3" style="transform:rotate(120deg);transform-origin:55px 55px">
+        <ellipse cx="55" cy="55" rx="48" ry="18" fill="none" stroke="rgba(255,77,0,0.15)" stroke-width="1.2"/>
+        <circle cx="103" cy="55" r="3" fill="#ff9966"/>
+      </g>
+      <!-- Nucleus -->
+      <circle cx="55" cy="55" r="22" fill="#111" stroke="#ff4d00" stroke-width="2"/>
+      <!-- FACE — eyes and mouth change via JS -->
+      <g id="atomx-face">
+        <!-- idle face -->
+        <circle id="eye-l" cx="48" cy="51" r="3" fill="#ff4d00"/>
+        <circle id="eye-r" cx="62" cy="51" r="3" fill="#ff4d00"/>
+        <path id="mouth" d="M47 60 Q55 67 63 60" stroke="#ff4d00" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+  <div class="atomx-bubble" id="atomx-bubble">
+    <span class="bubble-text" id="bubble-text">¡Hola rey! ¿Qué diseño quieres enseñarme? 🤙</span>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- SELECTOR TONO DE PIEL -->
+  <div class="skin-selector">
+    <span class="skin-label">TONO DE PIEL DEL CLIENTE — elige antes de subir el diseño</span>
+    <div class="skin-options">
+      <button class="skin-btn active" data-skin="1" onclick="selectSkin(this)">
+        <div class="skin-circle" style="background:#FDDBB4"></div>
+        <div class="skin-name">MUY CLARA</div>
+      </button>
+      <button class="skin-btn" data-skin="2" onclick="selectSkin(this)">
+        <div class="skin-circle" style="background:#E8B88A"></div>
+        <div class="skin-name">CLARA</div>
+      </button>
+      <button class="skin-btn" data-skin="3" onclick="selectSkin(this)">
+        <div class="skin-circle" style="background:#C68642"></div>
+        <div class="skin-name">MEDIA</div>
+      </button>
+      <button class="skin-btn" data-skin="4" onclick="selectSkin(this)">
+        <div class="skin-circle" style="background:#8D5524"></div>
+        <div class="skin-name">OSCURA</div>
+      </button>
+      <button class="skin-btn" data-skin="5" onclick="selectSkin(this)">
+        <div class="skin-circle" style="background:#4A2912"></div>
+        <div class="skin-name">MUY OSCURA</div>
+      </button>
+    </div>
+    <div class="skin-lock-hint" id="skin-lock-hint">🔒 Selección bloqueada — reinicia para cambiar</div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+    <div id="upload-placeholder">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-title">Sube el diseño del tatuaje</div>
+      <div class="upload-sub">ATOMX detecta los colores y te dice<br>exactamente qué tintas necesitas</div>
+    </div>
+    <img id="preview-img" alt="Diseño">
+    <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+  </div>
+
+  <!-- ANALYZE BTN -->
+  <button class="analyze-btn" id="analyze-btn" onclick="analyzeImage()">
+    ⚡ QUE ATOMX LO ANALICE
+  </button>
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    <div class="loading-steps">
+      <div class="loading-step active" id="step1">🔸 Escaneando los colores del diseño...</div>
+      <div class="loading-step" id="step2">🎨 Identificando tintas del catálogo...</div>
+      <div class="loading-step" id="step3">🧪 Calculando comportamiento en piel...</div>
+    </div>
+  </div>
+
+  <!-- ERROR BOX -->
+  <div id="error-box" style="display:none;background:#1a0a0a;border:1px solid #ff4d00;border-radius:12px;padding:16px;margin-bottom:16px;">
+    <div style="font-family:'Space Mono',monospace;font-size:10px;color:#ff4d00;margin-bottom:8px;letter-spacing:2px">ERROR COMPLETO</div>
+    <div id="error-msg" style="font-size:11px;color:#f0f0f0;word-break:break-all;line-height:1.6"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results"></div>
+
+</div>
+
+<script>
+// ── CATÁLOGO REAL ATOM X SUPPLY — ETERNAL INK (solo productos en stock) ──
+const catalogo = {
+  negros: [
+    { nombre:"Eternal Triple Black",    precio:19.51, uso:"Negro intenso líneas y relleno" },
+    { nombre:"Eternal Perfect Black",   precio:19.51, uso:"Negro perfecto todo uso" },
+    { nombre:"Eternal Maxx Black",      precio:19.51, uso:"Negro máxima densidad" },
+    { nombre:"Eternal Lining Black",    precio:19.51, uso:"Específico para líneas finas" },
+    { nombre:"Eternal Blackbird",       precio:19.51, uso:"Negro suave para sombreado" },
+  ],
+  grises: [
+    { nombre:"Eternal Cool Light Gray",  precio:19.51, uso:"Gris frío claro sombras suaves" },
+    { nombre:"Eternal Cool Medium Grey", precio:19.51, uso:"Gris frío medio" },
+    { nombre:"Eternal Cool Dark Grey",   precio:19.51, uso:"Gris frío oscuro" },
+    { nombre:"Eternal Warm Light Grey",  precio:19.51, uso:"Gris cálido claro" },
+    { nombre:"Eternal Warm Medium Gray", precio:19.51, uso:"Gris cálido medio" },
+    { nombre:"Eternal Warm Dark Gray",   precio:19.51, uso:"Gris cálido oscuro" },
+    { nombre:"Eternal Gray",             precio:19.51, uso:"Gris estándar" },
+    { nombre:"Eternal Smoke",            precio:20.81, uso:"Gris humo sombreado" },
+    { nombre:"Eternal Bay Gray",         precio:19.51, uso:"Gris neutro versátil" },
+    { nombre:"Eternal Exhaust",          precio:19.51, uso:"Gris violáceo oscuro" },
+    { nombre:"Eternal Ink Neutral Gray Set", precio:39.00, uso:"Set grises neutros" },
+  ],
+  blancos: [
+    { nombre:"Eternal White",            precio:19.51, uso:"Blanco puro todo uso" },
+    { nombre:"Eternal Perfect White",    precio:19.51, uso:"Blanco denso highlights" },
+    { nombre:"Eternal Ivory",            precio:19.51, uso:"Blanco marfil suave" },
+    { nombre:"Eternal White Knight",     precio:19.51, uso:"Blanco opaco correcciones" },
+    { nombre:"Eternal Off White",        precio:20.81, uso:"Blanco roto para pieles" },
+    { nombre:"Eternal Snowflake",        precio:20.81, uso:"Blanco azulado glacial" },
+    { nombre:"Eternal Fair Maiden",      precio:19.51, uso:"Blanco rosado muy suave" },
+  ],
+  rojos: [
+    { nombre:"Eternal Crimson Red",      precio:19.51, uso:"Rojo clásico brillante" },
+    { nombre:"Eternal Ruby Red",         precio:19.51, uso:"Rojo rubí intenso" },
+    { nombre:"Eternal Vette Red",        precio:19.51, uso:"Rojo vivo muy saturado" },
+    { nombre:"Eternal Deep Red",         precio:19.51, uso:"Rojo oscuro profundo" },
+    { nombre:"Eternal Dark Red",         precio:19.51, uso:"Rojo oscuro" },
+    { nombre:"Eternal Light Red",        precio:19.51, uso:"Rojo claro" },
+    { nombre:"Eternal Lipstick Red",     precio:19.51, uso:"Rojo vivo tipo labial" },
+    { nombre:"Eternal Rusty Red",        precio:19.51, uso:"Rojo óxido envejecido" },
+    { nombre:"Eternal Undead Red",       precio:19.51, uso:"Rojo sangre oscura" },
+    { nombre:"Eternal Dried Blood",      precio:19.51, uso:"Rojo sangre seca muy oscuro" },
+    { nombre:"Eternal Moulin Rouge",     precio:19.51, uso:"Rojo intenso dramático" },
+    { nombre:"Eternal Wine Berry",       precio:19.51, uso:"Burdeos oscuro" },
+  ],
+  rosas: [
+    { nombre:"Eternal Hot Pink",         precio:19.51, uso:"Rosa fucsia intenso" },
+    { nombre:"Eternal Vivid Pink",       precio:19.51, uso:"Rosa vivo brillante" },
+    { nombre:"Eternal Flamingo Pink",    precio:19.51, uso:"Rosa flamenco suave" },
+    { nombre:"Eternal Pink",             precio:19.51, uso:"Rosa estándar" },
+    { nombre:"Eternal Pepto Pink",       precio:19.51, uso:"Rosa chicle pastel" },
+    { nombre:"Eternal Light Magenta",    precio:19.51, uso:"Magenta claro" },
+    { nombre:"Eternal Magenta",          precio:19.51, uso:"Magenta puro" },
+    { nombre:"Eternal Fuchsia",          precio:19.51, uso:"Fucsia brillante" },
+    { nombre:"Eternal Antique Fuchsia",  precio:19.51, uso:"Fucsia antiguo apagado" },
+    { nombre:"Eternal Mulberry",         precio:19.51, uso:"Mora oscura" },
+    { nombre:"Eternal Wild Orchid",      precio:19.51, uso:"Orquídea viva" },
+    { nombre:"Eternal Dusty Rose",       precio:19.51, uso:"Rosa envejecido apagado" },
+    { nombre:"Eternal Rose Satin",       precio:19.51, uso:"Rosa satinado elegante" },
+    { nombre:"Eternal Victorian Rose",   precio:19.51, uso:"Rosa victoriano vintage" },
+    { nombre:"Eternal Plush Blush",      precio:19.51, uso:"Rosa empolvado suave" },
+    { nombre:"Eternal Salmon",           precio:19.51, uso:"Salmón rosado natural" },
+    { nombre:"Eternal Red Violet",       precio:19.51, uso:"Rojo violáceo" },
+    { nombre:"Eternal Cotton Candy",     precio:19.51, uso:"Rosa algodón de azúcar" },
+  ],
+  morados: [
+    { nombre:"Eternal Dark Purple",      precio:19.51, uso:"Morado oscuro intenso" },
+    { nombre:"Eternal Imperial Violet",  precio:19.51, uso:"Violeta imperial medio" },
+    { nombre:"Eternal Plum",             precio:19.51, uso:"Ciruela oscura" },
+    { nombre:"Eternal Cuda Purple",      precio:19.51, uso:"Morado medio brillante" },
+    { nombre:"Eternal Light Purple",     precio:19.51, uso:"Morado claro" },
+    { nombre:"Eternal Lavender",         precio:19.51, uso:"Lavanda suave" },
+    { nombre:"Eternal Enchanted Lilac",  precio:19.51, uso:"Lila pastel" },
+  ],
+  naranjas: [
+    { nombre:"Eternal Orange",           precio:20.81, uso:"Naranja puro brillante" },
+    { nombre:"Eternal Bright Orange",    precio:19.51, uso:"Naranja muy vivo" },
+    { nombre:"Eternal Burnt Orange",     precio:20.81, uso:"Naranja tostado" },
+    { nombre:"Eternal Rust",             precio:20.81, uso:"Naranja óxido oscuro" },
+    { nombre:"Eternal Tangerine",        precio:19.51, uso:"Naranja mandarina suave" },
+    { nombre:"Eternal Papaya",           precio:19.51, uso:"Salmón naranja vivo" },
+  ],
+  amarillos: [
+    { nombre:"Eternal Bright Yellow",    precio:20.81, uso:"Amarillo puro brillante" },
+    { nombre:"Eternal Lightning Yellow", precio:20.81, uso:"Amarillo neón eléctrico" },
+    { nombre:"Eternal Bumblebee",        precio:20.81, uso:"Amarillo abeja saturado" },
+    { nombre:"Eternal Sunflower",        precio:20.81, uso:"Amarillo girasol cálido" },
+    { nombre:"Eternal Golden Yellow",    precio:20.81, uso:"Amarillo dorado" },
+    { nombre:"Eternal Harvest Gold",     precio:20.81, uso:"Dorado otoñal" },
+    { nombre:"Eternal Old Gold",         precio:19.51, uso:"Dorado envejecido" },
+  ],
+  verdes: [
+    { nombre:"Eternal Nuclear Green",     precio:20.81, uso:"Verde neón fluorescente" },
+    { nombre:"Eternal Lime Green",        precio:20.81, uso:"Verde lima brillante" },
+    { nombre:"Eternal Shamrock",          precio:20.81, uso:"Verde trébol puro" },
+    { nombre:"Eternal Jade",              precio:20.81, uso:"Verde jade medio" },
+    { nombre:"Eternal Jungle Green",      precio:20.81, uso:"Verde selva oscuro" },
+    { nombre:"Eternal Green Concentrate", precio:20.81, uso:"Verde puro muy saturado" },
+    { nombre:"Eternal Grass Green",       precio:19.51, uso:"Verde hierba natural" },
+    { nombre:"Eternal Avocado",           precio:20.81, uso:"Verde aguacate apagado" },
+    { nombre:"Eternal Olive",             precio:20.81, uso:"Verde oliva oscuro" },
+    { nombre:"Eternal Sage",              precio:20.81, uso:"Verde salvia suave" },
+    { nombre:"Eternal Spearmint",         precio:20.81, uso:"Verde menta fresco" },
+    { nombre:"Eternal Mint Green",        precio:19.51, uso:"Verde menta claro" },
+    { nombre:"Eternal Aqua Marine",       precio:20.81, uso:"Verde agua turquesa" },
+    { nombre:"Eternal Sea Foam",          precio:19.51, uso:"Verde espuma de mar" },
+    { nombre:"Eternal Granny Smith Green",precio:19.51, uso:"Verde manzana claro" },
+    { nombre:"Eternal Roadrunner Green",  precio:20.81, uso:"Verde neón eléctrico" },
+    { nombre:"Eternal Honey Dew",         precio:20.81, uso:"Verde claro pastel" },
+    { nombre:"Eternal Graffiti Green",    precio:20.81, uso:"Verde urbano vibrante" },
+    { nombre:"Eternal Coral Green",       precio:19.51, uso:"Verde coral suave" },
+    { nombre:"Eternal Grape Leaf",        precio:19.51, uso:"Verde hoja oscuro" },
+    { nombre:"Eternal Green Slime",       precio:20.81, uso:"Verde slime fluorescente" },
+  ],
+  azules: [
+    { nombre:"Eternal True Blue",         precio:20.81, uso:"Azul puro estándar" },
+    { nombre:"Eternal Dark Cobalt",       precio:20.81, uso:"Azul cobalto oscuro" },
+    { nombre:"Eternal Galaxy Blue",       precio:20.81, uso:"Azul muy oscuro profundo" },
+    { nombre:"Eternal Blue Concentrate",  precio:20.81, uso:"Azul saturado puro" },
+    { nombre:"Eternal Peacock Blue",      precio:20.81, uso:"Azul pavo real medio" },
+    { nombre:"Eternal Deep Sea",          precio:20.81, uso:"Azul mar profundo" },
+    { nombre:"Eternal Sky Blue",          precio:20.81, uso:"Azul cielo brillante" },
+    { nombre:"Eternal Baby Blue",         precio:20.81, uso:"Azul bebé suave" },
+    { nombre:"Eternal Bermuda Blue",      precio:20.81, uso:"Azul caribe tropical" },
+    { nombre:"Eternal Slate Blue",        precio:19.51, uso:"Azul pizarra apagado" },
+    { nombre:"Eternal Dusty Blue",        precio:20.81, uso:"Azul polvoriento suave" },
+    { nombre:"Eternal Periwinkle",        precio:20.81, uso:"Azul lavanda suave" },
+    { nombre:"Eternal Robin Egg",         precio:20.81, uso:"Azul huevo petirrojo" },
+    { nombre:"Eternal Turquoise",         precio:20.81, uso:"Turquesa brillante" },
+    { nombre:"Eternal Tropical Teal",     precio:20.81, uso:"Verde azulado tropical" },
+    { nombre:"Eternal GTO Teal",          precio:20.81, uso:"Verde azulado intenso" },
+    { nombre:"Eternal Frostbite Blue",    precio:20.81, uso:"Azul hielo muy frío" },
+  ],
+  pieles: [
+    { nombre:"Eternal Rich Medium Flesh", precio:19.51, uso:"Piel media para retratos" },
+    { nombre:"Eternal Rich Dark Flesh",   precio:19.51, uso:"Piel oscura para retratos" },
+    { nombre:"Eternal Georgia Peach",     precio:20.81, uso:"Piel clara melocotón" },
+    { nombre:"Eternal Light Peach",       precio:20.81, uso:"Piel muy clara" },
+    { nombre:"Eternal Peachy Flesh",      precio:20.81, uso:"Piel rosácea natural" },
+    { nombre:"Eternal Nude Blush",        precio:19.51, uso:"Piel nude rosada" },
+    { nombre:"Eternal Sea Shell",         precio:19.51, uso:"Piel muy pálida" },
+    { nombre:"Eternal Almond",            precio:20.81, uso:"Piel almendra media" },
+    { nombre:"Eternal Spice",             precio:19.51, uso:"Piel especiada oscura" },
+    { nombre:"Eternal Andrea Afferni Light Chestnut", precio:19.51, uso:"Castaño claro retratos" },
+    { nombre:"Eternal Bright Fawn",       precio:19.51, uso:"Beige claro natural" },
+    { nombre:"Eternal Sandy Beige",       precio:19.51, uso:"Beige arena cálido" },
+  ],
+  marrones: [
+    { nombre:"Eternal Dark Brown",        precio:19.51, uso:"Marrón oscuro estándar" },
+    { nombre:"Eternal Hot Chocolate",     precio:19.51, uso:"Marrón chocolate cálido" },
+    { nombre:"Eternal Mocha",             precio:20.81, uso:"Marrón moca suave" },
+    { nombre:"Eternal Caramel",           precio:19.51, uso:"Marrón caramelo dorado" },
+    { nombre:"Eternal Brown",             precio:19.51, uso:"Marrón básico natural" },
+    { nombre:"Eternal Cocoa Bean",        precio:19.51, uso:"Marrón cacao oscuro" },
+    { nombre:"Eternal Rich Espresso",     precio:20.81, uso:"Marrón expreso muy oscuro" },
+    { nombre:"Eternal Sable",             precio:20.81, uso:"Marrón casi negro" },
+    { nombre:"Eternal Ochre",             precio:20.81, uso:"Ocre amarillento" },
+    { nombre:"Eternal Dark Ochre",        precio:20.81, uso:"Ocre oscuro tierroso" },
+    { nombre:"Eternal Mudslide",          precio:19.51, uso:"Marrón barro grisáceo" },
+    { nombre:"Eternal Longhorn Brown",    precio:20.81, uso:"Marrón cuero cálido" },
+    { nombre:"Eternal Mudflap Brown",     precio:20.81, uso:"Marrón oscuro apagado" },
+    { nombre:"Eternal Plague Brown",      precio:20.81, uso:"Marrón apagado oscuro" },
+    { nombre:"Eternal Putrid Brown",      precio:19.51, uso:"Marrón desaturado sucio" },
+    { nombre:"Eternal Whiskey Barrel",    precio:19.51, uso:"Marrón whiskey cálido" },
+  ],
+  especiales: [
+    { nombre:"Eternal Bondo",             precio:19.51, uso:"Gris medio transiciones" },
+    { nombre:"Eternal Cold Steel",        precio:19.51, uso:"Gris acero frío" },
+    { nombre:"Eternal Rigor Mortis",      precio:19.51, uso:"Gris azulado cadavérico" },
+    { nombre:"Eternal Freshly Dead",      precio:19.51, uso:"Verde grisáceo zombi fresco" },
+    { nombre:"Eternal Gangrene",          precio:19.51, uso:"Verde oscuro gangrenoso" },
+    { nombre:"Eternal Graveside Dark",    precio:20.81, uso:"Morado grisáceo oscuro" },
+    { nombre:"Eternal Graveside Light",   precio:19.51, uso:"Lila grisáceo claro" },
+    { nombre:"Eternal Infected Skin",     precio:19.51, uso:"Verde marrón enfermizo" },
+    { nombre:"Eternal Decomposed Skin",   precio:19.51, uso:"Marrón verdoso zombie" },
+  ],
+};
+
+// ── CONTADOR ───────────────────────────────────────────────────────────
+// ── CONSENTIMIENTO ─────────────────────────────────────────────────────
+function initConsent() {
+  const consent = localStorage.getItem('atomx_consent');
+  if (!consent) {
+    document.getElementById('consentOverlay').style.display = 'flex';
+  }
+}
+
+function acceptConsent() {
+  const history = document.getElementById('consentHistory').checked;
+  const notifications = document.getElementById('consentNotifications').checked;
+  localStorage.setItem('atomx_consent', JSON.stringify({
+    version: '1.0',
+    date: new Date().toISOString(),
+    essential: true,
+    history,
+    notifications
+  }));
+  document.getElementById('consentOverlay').style.display = 'none';
+}
+
+function rejectOptional() {
+  localStorage.setItem('atomx_consent', JSON.stringify({
+    version: '1.0',
+    date: new Date().toISOString(),
+    essential: true,
+    history: false,
+    notifications: false
+  }));
+  document.getElementById('consentOverlay').style.display = 'none';
+}
+
+initConsent();
+
+function initCounter() {
+  const n = parseInt(localStorage.getItem('atomx_count') || '0');
+  document.getElementById('counter-num').textContent = n;
+}
+function incrementCounter() {
+  const n = parseInt(localStorage.getItem('atomx_count') || '0') + 1;
+  localStorage.setItem('atomx_count', n);
+  const el = document.getElementById('counter-num');
+  el.textContent = n;
+  el.style.transform = 'scale(1.3)';
+  setTimeout(() => el.style.transform = 'scale(1)', 300);
+}
+initCounter();
+
+// ── MENSAJES DE ATOMX ──────────────────────────────────────────────────
+const mensajes = {
+  idle:      "¡Hola rey! ¿Qué diseño quieres enseñarme? 🤙",
+  uploaded:  "¡Eso tiene muy buena pinta! Dale y te digo las tintas exactas 🔥",
+  thinking:  "Espera que me lo estoy mirando bien... analizando colores 🧐",
+  results:   "¡Fuego puro! Aquí tienes todo lo que necesitas 🎨",
+  error:     "Uy, algo ha fallado... Prueba otra vez tío 😅"
+};
+
+// Expresiones SVG: [eye-l-r, eye-l-cy, eye-r-r, eye-r-cy, mouth-d]
+const caras = {
+  idle:     { lx:48, ly:51, lr:3,  rx:62, ry:51, rr:3,  m:"M47 60 Q55 67 63 60" },
+  uploaded: { lx:48, ly:50, lr:4,  rx:62, ry:50, rr:4,  m:"M46 59 Q55 68 64 59" },
+  thinking: { lx:48, ly:51, lr:2.5,rx:62, ry:51, rr:3.5,m:"M47 63 Q55 63 63 63" },
+  results:  { lx:48, ly:50, lr:4.5,rx:62, ry:50, rr:4.5,m:"M45 59 Q55 70 65 59" },
+  error:    { lx:48, ly:51, lr:3,  rx:62, ry:51, rr:3,  m:"M47 65 Q55 58 63 65" },
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────
+let imageBase64 = null;
+let imageMediaType = 'image/jpeg';
+let loadingInterval = null;
+let selectedSkin = 1;
+let extractedColors = [];
+
+// ── UTILIDADES COLOR ────────────────────────────────────────────────────
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+}
+
+function isSkinTone(h, s, l) {
+  // Filtra SOLO tonos de piel humana real del fondo/brazo:
+  // matiz muy cálido (naranja-melocotón), saturación BAJA (piel natural no es muy saturada),
+  // luminosidad ALTA (la piel expuesta es clara en foto)
+  // Colores carne usados en tatuajes tienen mayor saturación o menor luminosidad
+  const warmHue = (h >= 10 && h <= 35);
+  return warmHue && s >= 8 && s <= 38 && l >= 55 && l <= 85;
+}
+
+function hslToCategory(h, s, l) {
+  if (s < 12) {
+    if (l > 78) return 'blancos';
+    if (l < 22) return 'negros';
+    return 'grises';
+  }
+  if (s < 30 && l < 45) return 'marrones';
+  if ((h <= 14 || h >= 346)) return 'rojos';
+  if (h <= 38) return s < 50 ? 'marrones' : 'naranjas';
+  if (h <= 65) return l < 55 ? 'marrones' : 'amarillos';
+  if (h <= 155) return 'verdes';
+  if (h <= 260) return 'azules';
+  if (h <= 290) return 'morados';
+  if (h <= 345) return s > 40 && l > 50 ? 'rosas' : 'morados';
+  return 'rojos';
+}
+
+// Distancia perceptual HSL (más precisa que distancia RGB para tintas)
+function hslDistance(h1, s1, l1, h2, s2, l2) {
+  const dh = Math.min(Math.abs(h1 - h2), 360 - Math.abs(h1 - h2)) / 180;
+  const ds = Math.abs(s1 - s2) / 100;
+  const dl = Math.abs(l1 - l2) / 100;
+  return Math.sqrt(dh * dh * 2 + ds * ds + dl * dl * 1.5);
+}
+
+// ── EXTRACTOR DE COLORES (Canvas + HSL) ────────────────────────────────
+function getDominantColors(canvas, n) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const data = ctx.getImageData(0, 0, w, h).data;
+  const buckets = {};
+  const step = Math.max(4, Math.floor(w * h / 4000));
+
+  for (let i = 0; i < data.length; i += 4 * step) {
+    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+    if (a < 180) continue;
+    const [hh, ss, ll] = rgbToHsl(r, g, b);
+    // Quitar blancos/negros puros de fondo
+    if (ll > 94 || ll < 5) continue;
+    // Bucket en espacio HSL: más fino en matiz (8°), más grueso en S/L
+    const bh = Math.round(hh / 8) * 8;
+    const bs = Math.round(ss / 10) * 10;
+    const bl = Math.round(ll / 8) * 8;
+    const key = `${bh},${bs},${bl}`;
+    if (!buckets[key]) buckets[key] = { count: 0, rSum: 0, gSum: 0, bSum: 0 };
+    buckets[key].count++;
+    buckets[key].rSum += r;
+    buckets[key].gSum += g;
+    buckets[key].bSum += b;
+  }
+
+  // Ordenar por frecuencia y filtrar similares usando distancia HSL
+  const candidates = Object.entries(buckets)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, n * 5);
+
+  const result = [];
+  for (const [key, val] of candidates) {
+    const r = Math.round(val.rSum / val.count);
+    const g = Math.round(val.gSum / val.count);
+    const b = Math.round(val.bSum / val.count);
+    const [hh, ss, ll] = rgbToHsl(r, g, b);
+    const dupe = result.some(c => hslDistance(hh, ss, ll, c.hsl[0], c.hsl[1], c.hsl[2]) < 0.18);
+    if (!dupe && !isSkinTone(hh, ss, ll)) {
+      const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+      result.push({ rgb: [r, g, b], hsl: [hh, ss, ll], hex, categoria: hslToCategory(hh, ss, ll) });
+    }
+    if (result.length >= n) break;
+  }
+  return result;
+}
+
+// ── ATOMX CONTROLLER ───────────────────────────────────────────────────
+function setAtomxState(state) {
+  const char = document.getElementById('atomx-char');
+  const textEl = document.getElementById('bubble-text');
+  const bubble = document.getElementById('atomx-bubble');
+
+  // Fade out text
+  textEl.classList.add('fade');
+  setTimeout(() => {
+    textEl.textContent = mensajes[state] || mensajes.idle;
+    textEl.classList.remove('fade');
+  }, 200);
+
+  // Update face
+  const c = caras[state] || caras.idle;
+  document.getElementById('eye-l').setAttribute('cx', c.lx);
+  document.getElementById('eye-l').setAttribute('cy', c.ly);
+  document.getElementById('eye-l').setAttribute('r',  c.lr);
+  document.getElementById('eye-r').setAttribute('cx', c.rx);
+  document.getElementById('eye-r').setAttribute('cy', c.ry);
+  document.getElementById('eye-r').setAttribute('r',  c.rr);
+  document.getElementById('mouth').setAttribute('d',  c.m);
+
+  // Update classes
+  char.className = 'atomx-svg-wrap ' + state;
+  bubble.className = 'atomx-bubble' + (state === 'results' ? ' highlight' : '');
+}
+
+// ── SKIN SELECTOR ──────────────────────────────────────────────────────
+function selectSkin(btn) {
+  document.querySelectorAll('.skin-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedSkin = parseInt(btn.dataset.skin);
+}
+
+function lockSkinSelector() {
+  document.querySelectorAll('.skin-btn').forEach(b => b.classList.add('locked'));
+  document.getElementById('skin-lock-hint').classList.add('visible');
+}
+
+function unlockSkinSelector() {
+  document.querySelectorAll('.skin-btn').forEach(b => b.classList.remove('locked'));
+  document.getElementById('skin-lock-hint').classList.remove('visible');
+}
+
+const skinInfo = {
+  1: { nombre:"Muy clara",  fitzpatrick:"I-II",  consejo:"Los colores funcionan muy bien. El blanco resalta al máximo. Los amarillos pueden quedar muy pálidos al cicatrizar." },
+  2: { nombre:"Clara",      fitzpatrick:"II-III", consejo:"Excelente para colores vivos. Los pasteles y amarillos funcionan bien. Evitar depender mucho del blanco para highlights." },
+  3: { nombre:"Media",      fitzpatrick:"III-IV", consejo:"Los rojos, naranjas y verdes oscuros funcionan muy bien. Los colores claros pierden algo de saturación." },
+  4: { nombre:"Oscura",     fitzpatrick:"IV-V",   consejo:"Prioriza colores muy saturados y oscuros. El blanco y amarillo no funcionan bien. Los azules y verdes oscuros son ideales." },
+  5: { nombre:"Muy oscura", fitzpatrick:"V-VI",   consejo:"Solo colores muy saturados y oscuros. Evitar completamente blancos, amarillos y pasteles. Negro y colores intensos funcionan." },
+};
+
+// ── FILE HANDLING ──────────────────────────────────────────────────────
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const data = ev.target.result;
+    const imgEl = new Image();
+    imgEl.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 1200;
+      let w = imgEl.width, h = imgEl.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(imgEl, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.82);
+      imageBase64 = compressed.split(',')[1];
+      imageMediaType = 'image/jpeg';
+      // Extraer colores reales del canvas
+      extractedColors = getDominantColors(canvas, 10);
+
+      const preview = document.getElementById('preview-img');
+      preview.src = data;
+      preview.style.display = 'block';
+      document.getElementById('upload-placeholder').style.display = 'none';
+      document.getElementById('upload-zone').classList.add('has-image');
+      document.getElementById('analyze-btn').style.display = 'block';
+      lockSkinSelector();
+      document.getElementById('results').style.display = 'none';
+      document.getElementById('results').innerHTML = '';
+      setAtomxState('uploaded');
+    };
+    imgEl.src = data;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── LOADING ANIMATION ──────────────────────────────────────────────────
+function startLoadingAnimation() {
+  let step = 1;
+  loadingInterval = setInterval(() => {
+    document.querySelectorAll('.loading-step').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('step' + step);
+    if (el) el.classList.add('active');
+    step = step >= 3 ? 1 : step + 1;
+  }, 1500);
+}
+function stopLoadingAnimation() {
+  if (loadingInterval) clearInterval(loadingInterval);
+}
+
+// ── ANALYZE ────────────────────────────────────────────────────────────
+async function analyzeImage() {
+  if (!imageBase64) return;
+
+  const skin = skinInfo[selectedSkin];
+
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  setAtomxState('thinking');
+  startLoadingAnimation();
+
+  const catalogoResumen = Object.entries(catalogo).map(([color, tintas]) =>
+    `${color}: ${tintas.map(t => `${t.nombre} (${t.precio}EUR)`).join(', ')}`
+  ).join('\n');
+
+  const viabilidad = selectedSkin <= 2
+    ? "todos los colores funcionan bien"
+    : selectedSkin === 3
+    ? "azules/verdes oscuros/rojos bien; amarillo vira a naranja; blancos/pasteles comprometidos"
+    : selectedSkin === 4
+    ? "solo colores muy saturados y oscuros; naranja/amarillo/blanco/pasteles NO funcionan"
+    : "solo negro y colores muy saturados oscuros; amarillo/naranja/blanco/pasteles/colores claros INVIABLES";
+
+  const categorias = Object.keys(catalogo).join(', ');
+  const colorList = extractedColors.map((c, i) => {
+    const [hh, ss, ll] = c.hsl;
+    return `${i+1}. ${c.hex} | H:${hh}° S:${ss}% L:${ll}% | categoría probable: ${c.categoria}`;
+  }).join('\n');
+
+  const estilosInfo = `
+ESTILOS Y TINTAS TÍPICAS:
+- Japonés/Irezumi: negros densos, rojos intensos, verde jade, azul cobalto oscuro, naranja koi, amarillo dorado. Armonía análoga en degradados, complementaria en focos.
+- Traditional/Old School: negros líneas gruesas, rojo/azul/verde/amarillo sólidos sin gradiente. Max 5 colores.
+- Neo-Traditional: como traditional + más gama, gradientes suaves, vibrantes.
+- Realismo/Retrato: escala de grises fríos, negros, desaturados. Armonía monocromática.
+- Blackwork/Dotwork: solo negros máxima densidad.
+- Watercolor: muy saturados sin línea negra, pasteles vivos. Armonía análoga siempre.
+- Chicano: solo grises y negros.
+- Fine Line: negro suave para líneas finas, grises muy diluidos.
+- New School: colores cartoon muy saturados, complementarios para impacto.`;
+
+  const prompt = `Eres ATOMX, experto colorista en tintas Eternal Ink para tatuaje. Analiza la imagen.
+
+PASO 1 — Detecta el ESTILO del tatuaje.
+PASO 2 — Analiza dominante/secundario, temperatura, saturación y valor tonal de la imagen.
+PASO 3 — Recomienda tintas Eternal por FUNCIÓN (base, sombra, transición, luz, línea), no solo por parecido RGB. Prioriza legibilidad en piel antes que copiar el color exacto. Usa 3-8 colores máximo salvo diseños complejos. Aplica armonía análoga para degradados, complementaria para focos. Si no hay match exacto, elige el Eternal más tatuable por temperatura, profundidad y saturación.
+
+COLORES MEDIDOS (tonos de piel de la persona ya filtrados — si ves color carne en el diseño inclúyelo):
+${colorList}
+
+PIEL: ${skin.nombre} (Fitzpatrick ${skin.fitzpatrick})
+VIABILIDAD: ${viabilidad}
+
+${estilosInfo}
+
+REGLAS COLORIMETRÍA:
+- Rojos H:0-14° S>70: Crimson Red / Ruby Red / Vette Red
+- Rojos H:0-14° S 40-70 o L<35: Deep Red / Dark Red / Undead Red
+- Rojo-naranja H:15-30°: Rusty Red / Burnt Orange
+- Melanina filtra cálidos/claros en FT III+; negro/azul oscuro estables siempre
+- Blanco/amarillo inviables FT IV+; pastel desaparece en piel media/oscura
+- Evitar exceso de tonos que compiten entre sí
+
+CATÁLOGO — CATEGORÍAS DISPONIBLES: ${categorias}
+
+Para cada color da EXACTAMENTE 2 tintas Eternal (opción principal y alternativa más contrastada que cure mejor).
+Formato de salida para cada tinta: ZONA / FUNCIÓN / COLOR ETERNAL / MOTIVO
+
+Responde SOLO JSON sin texto extra ni backticks:
+{"estilo":"estilo detectado","descripcion_estilo":"tintas típicas de este estilo en una frase","colores_detectados":[{"nombre":"nombre descriptivo","hex":"#xxx","porcentaje":30}],"tintas_recomendadas":[{"color_base":"nombre color","zona":"zona del diseño","funcion":"base|sombra|transicion|luz|linea","categoria":"categoria exacta del catalogo","hex_objetivo":"#xxx","opcion1":{"tinta":"Eternal Nombre Exacto","razon":"motivo técnico"},"opcion2":{"tinta":"Eternal Nombre Exacto","razon":"alternativa más contrastada"},"advertencia":"aviso real o vacio"}],"consejo_piel":"consejo específico para piel ${skin.nombre}"}`;
+
+  try {
+    const response = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: imageBase64, prompt, mediaType: imageMediaType })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text().catch(() => response.status.toString());
+      throw new Error('HTTP ' + response.status + ': ' + errText);
+    }
+
+    const data = await response.json();
+    const raw = data.content.map(i => i.text || '').join('');
+    let clean = raw.replace(/```json|```/g, '').trim();
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if (start !== -1 && end !== -1) clean = clean.slice(start, end + 1);
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch(jsonErr) {
+      throw new Error('JSON inválido. Raw: ' + clean.slice(0, 300));
+    }
+
+    stopLoadingAnimation();
+    document.getElementById('loading').style.display = 'none';
+    setAtomxState('results');
+    incrementCounter();
+    renderResults(parsed);
+
+  } catch (err) {
+    stopLoadingAnimation();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('analyze-btn').disabled = false;
+    setAtomxState('error');
+    // Mostrar error completo en pantalla
+    const errBox = document.getElementById('error-box');
+    document.getElementById('error-msg').textContent = err.message || JSON.stringify(err);
+    errBox.style.display = 'block';
+    console.error(err);
+  }
+}
+
+// ── BUSCAR PRECIO EN CATÁLOGO LOCAL ────────────────────────────────────
+function buscarPrecio(nombreTinta) {
+  for (const cat of Object.values(catalogo)) {
+    const found = cat.find(t => t.nombre.toLowerCase().includes(nombreTinta.toLowerCase().replace('eternal ', '')));
+    if (found) return found.precio;
+  }
+  return 19.51;
+}
+
+// ── RENDER RESULTS ─────────────────────────────────────────────────────
+function renderResults(data) {
+  const skin = skinInfo[selectedSkin];
+  let html = '';
+
+  // Estilo detectado
+  if (data.estilo) {
+    html += `
+      <div class="skin-alert" style="border-color:rgba(255,77,0,0.3);background:rgba(255,77,0,0.08)">
+        <div class="skin-alert-icon">🎨</div>
+        <div class="skin-alert-text"><strong>Estilo: ${data.estilo}</strong>${data.descripcion_estilo ? ' — ' + data.descripcion_estilo : ''}</div>
+      </div>`;
+  }
+
+  // Consejo de piel
+  if (data.consejo_piel) {
+    html += `
+      <div class="skin-alert">
+        <div class="skin-alert-icon">💡</div>
+        <div class="skin-alert-text"><strong>Piel ${skin.nombre}:</strong> ${data.consejo_piel}</div>
+      </div>`;
+  }
+
+  // Colores detectados
+  if (data.colores_detectados && data.colores_detectados.length) {
+    html += `<div class="section-title">🎨 Colores en el diseño</div>`;
+    html += `<div class="colors-grid">`;
+    data.colores_detectados.forEach(c => {
+      html += `
+        <div class="color-swatch">
+          <div class="swatch-color" style="background:${c.hex}"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">${c.nombre}</div>
+            <div class="swatch-hex">${c.hex}</div>
+            <div class="swatch-pct">${c.porcentaje}%</div>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Tintas — dos opciones por color
+  html += `<div class="section-title">📦 Tintas recomendadas</div>`;
+  let totalMin = 0;
+  data.tintas_recomendadas.forEach(t => {
+    const hasWarning = t.advertencia && t.advertencia.length > 3;
+    const precio1 = buscarPrecio(t.opcion1?.tinta || '');
+    const precio2 = buscarPrecio(t.opcion2?.tinta || '');
+    totalMin += precio1;
+    html += `
+      <div class="tinta-card">
+        <div class="tinta-header">
+          <div class="tinta-left">
+            <div class="tinta-color-dot" style="background:${t.hex_objetivo || '#888'}"></div>
+            <div>
+              <div class="tinta-nombre">${t.color_base}</div>
+              <div class="tinta-marca">${t.zona ? '📍 ' + t.zona : ''}${t.funcion ? ' · <span style="color:#ffd600;font-size:10px">' + t.funcion.toUpperCase() + '</span>' : ''}</div>
+            </div>
+          </div>
+        </div>
+        ${hasWarning ? `<div style="font-size:11px;color:#ffd600;margin:4px 0 8px;line-height:1.4">⚠️ ${t.advertencia}</div>` : ''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <div style="background:rgba(255,77,0,0.1);border:1px solid rgba(255,77,0,0.25);border-radius:10px;padding:10px">
+            <div style="font-size:9px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:4px">OPCIÓN 1</div>
+            <div style="font-size:13px;font-weight:700;line-height:1.3">${t.opcion1?.tinta || '-'}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.opcion1?.razon || ''}</div>
+            <div style="font-size:14px;font-weight:700;color:var(--accent);margin-top:6px">${precio1.toFixed(2)}€</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:10px">
+            <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:4px">OPCIÓN 2</div>
+            <div style="font-size:13px;font-weight:700;line-height:1.3">${t.opcion2?.tinta || '-'}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.opcion2?.razon || ''}</div>
+            <div style="font-size:14px;font-weight:700;color:var(--muted);margin-top:6px">${precio2.toFixed(2)}€</div>
+          </div>
+        </div>
+        <button class="comprar-btn" onclick="window.open('https://atomxsupply.com','_blank')">
+          VER EN ATOMXSUPPLY.COM →
+        </button>
+      </div>`;
+  });
+
+  // Resumen
+  html += `
+    <div class="resumen-card">
+      <div class="resumen-title">💰 RESUMEN DEL PEDIDO</div>
+      ${data.tintas_recomendadas.map(t => `
+        <div class="resumen-row">
+          <span style="color:var(--muted)">${t.color_base}</span>
+          <span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)">Op.1: ${t.opcion1?.tinta || '-'}</span>
+        </div>`).join('')}
+      <div class="resumen-total">
+        <span>TOTAL ESTIMADO (op.1)</span>
+        <span>${totalMin.toFixed(2)}€</span>
+      </div>
+    </div>`;
+
+  html += `<button class="reset-btn" onclick="resetApp()">↩ ANALIZAR OTRO DISEÑO</button>`;
+
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = html;
+  resultsEl.style.display = 'block';
+  document.getElementById('analyze-btn').style.display = 'none';
+  resultsEl.scrollIntoView({ behavior:'smooth' });
+}
+
+// ── RESET ──────────────────────────────────────────────────────────────
+function resetApp() {
+  imageBase64 = null;
+  document.getElementById('preview-img').style.display = 'none';
+  document.getElementById('preview-img').src = '';
+  document.getElementById('upload-placeholder').style.display = 'block';
+  document.getElementById('upload-zone').classList.remove('has-image');
+  unlockSkinSelector();
+  document.getElementById('analyze-btn').style.display = 'none';
+  document.getElementById('analyze-btn').disabled = false;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('file-input').value = '';
+  setAtomxState('idle');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+</script>
+</body>
+</html>

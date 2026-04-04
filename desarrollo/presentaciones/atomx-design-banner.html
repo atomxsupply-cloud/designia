@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATOM X Design Banner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #111;
+      --border: #1f1f1f;
+      --accent: #ff4d00;
+      --accent-soft: rgba(255, 77, 0, 0.3);
+      --accent-dim: rgba(255, 77, 0, 0.12);
+      --text: #f0f0f0;
+      --muted: #8a8a8a;
+      --yellow: #ffd600;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      width: 1600px;
+      height: 900px;
+      overflow: hidden;
+      font-family: "DM Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 77, 0, 0.22), transparent 24%),
+        radial-gradient(circle at 90% 15%, rgba(255, 214, 0, 0.12), transparent 18%),
+        linear-gradient(135deg, #080808 0%, #111 60%, #0b0b0b 100%);
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
+    }
+
+    .banner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 34px;
+      padding: 58px 70px;
+      align-items: center;
+    }
+
+    .eyebrow,
+    .tag,
+    .brand-sub {
+      font-family: "Space Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .atom {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid var(--accent-soft);
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(255, 77, 0, 0.18), rgba(255, 77, 0, 0.03));
+      position: relative;
+      box-shadow: inset 0 0 18px rgba(255, 77, 0, 0.16);
+    }
+
+    .atom::before,
+    .atom::after {
+      content: "";
+      position: absolute;
+      width: 42px;
+      height: 16px;
+      border: 1px solid rgba(255, 77, 0, 0.28);
+      border-radius: 50%;
+    }
+
+    .atom::after { transform: rotate(60deg); }
+
+    .core {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(255, 77, 0, 0.9);
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .brand-sub {
+      color: var(--yellow);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 74px;
+      line-height: 0.94;
+      max-width: 8ch;
+    }
+
+    .lead {
+      margin: 0 0 22px;
+      font-size: 22px;
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 28ch;
+    }
+
+    .keyline {
+      display: grid;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .line {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 12px rgba(255, 214, 0, 0.55);
+      flex: 0 0 auto;
+    }
+
+    .line span {
+      font-size: 18px;
+      color: #f0f0f0;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .tag {
+      font-size: 10px;
+      color: var(--yellow);
+      border: 1px solid rgba(255, 214, 0, 0.22);
+      background: rgba(255, 214, 0, 0.08);
+      border-radius: 999px;
+      padding: 8px 10px;
+    }
+
+    .visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .glow {
+      position: absolute;
+      width: 640px;
+      height: 640px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 77, 0, 0.18), transparent 62%);
+      filter: blur(10px);
+    }
+
+    .phone {
+      position: relative;
+      width: 430px;
+      height: 770px;
+      padding: 14px;
+      border-radius: 42px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 34px 80px rgba(0,0,0,0.48);
+      overflow: hidden;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 140px;
+      height: 22px;
+      margin-left: -70px;
+      border-radius: 0 0 20px 20px;
+      background: rgba(0,0,0,0.72);
+      z-index: 2;
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 30px;
+      overflow: hidden;
+      background: #0c0c0c;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .float-card {
+      position: absolute;
+      right: 0;
+      bottom: 56px;
+      width: 280px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(17,17,17,0.92);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+    }
+
+    .float-card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: var(--yellow);
+    }
+
+    .float-card span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <section class="banner">
+    <div class="copy">
+      <div class="eyebrow">Presentamos ATOM X Design</div>
+      <div class="brand">
+        <div class="atom"><div class="core"></div></div>
+        <div>
+          <div class="brand-title">ATOM X</div>
+          <div class="brand-sub">Color Matcher para tattoo</div>
+        </div>
+      </div>
+      <h1>La app que convierte un diseño en la tinta exacta.</h1>
+      <p class="lead">Sube un diseño real, elige tono de piel y deja que ATOM X recomiende las tintas Eternal más adecuadas con una experiencia visual premium.</p>
+
+      <div class="keyline">
+        <div class="line"><div class="dot"></div><span>Lee color, estilo y viabilidad en piel.</span></div>
+        <div class="line"><div class="dot"></div><span>Explica mejor la recomendación al cliente.</span></div>
+        <div class="line"><div class="dot"></div><span>Convierte análisis visual en venta real.</span></div>
+      </div>
+
+      <div class="tag-row">
+        <span class="tag">IA vertical</span>
+        <span class="tag">Tablet first</span>
+        <span class="tag">Detalles amarillos</span>
+        <span class="tag">Experiencia ATOM X</span>
+      </div>
+    </div>
+
+    <div class="visual">
+      <div class="glow"></div>
+      <div class="phone">
+        <div class="screen">
+          <img src="./app-full.png" alt="Aplicación ATOM X Design completa">
+        </div>
+      </div>
+      <div class="float-card">
+        <strong>Listo para enseñar</strong>
+        <span>Una demo visual clara para web, estudios, distribuidores y clientes del mundo tattoo.</span>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
