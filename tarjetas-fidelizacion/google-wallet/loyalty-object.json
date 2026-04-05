@@ -1,0 +1,36 @@
+{
+  "id": "TU_ISSUER_ID.CLIENTE-SERIAL-UNICO",
+  "classId": "TU_ISSUER_ID.atomx-fidelizacion-class",
+  "state": "ACTIVE",
+  "accountName": "NOMBRE DEL CLIENTE",
+  "accountId": "ID-CLIENTE",
+  "loyaltyPoints": {
+    "label": "Sellos",
+    "balance": {
+      "int": 0
+    }
+  },
+  "secondaryLoyaltyPoints": {
+    "label": "Meta",
+    "balance": {
+      "string": "10 sellos = regalo"
+    }
+  },
+  "barcode": {
+    "type": "QR_CODE",
+    "value": "ID-UNICO-CLIENTE",
+    "alternateText": "ID del cliente"
+  },
+  "heroImage": {
+    "sourceUri": {
+      "uri": "https://TU-DOMINIO.com/images/wallet-hero.png"
+    }
+  },
+  "textModulesData": [
+    {
+      "header": "Información",
+      "body": "Acumula 10 sellos y consigue tu recompensa. Válido en todos nuestros servicios.",
+      "id": "info"
+    }
+  ]
+}

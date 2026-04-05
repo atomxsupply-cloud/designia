@@ -1,0 +1,61 @@
+{
+  "passTypeIdentifier": "pass.com.TUNEGOCIO.fidelizacion",
+  "serialNumber": "SERIAL-UNICO-POR-CLIENTE",
+  "teamIdentifier": "TU_TEAM_ID_DE_APPLE",
+  "webServiceURL": "https://TU-DOMINIO.com/api/wallet/",
+  "authenticationToken": "TOKEN-SECRETO-POR-PASE",
+  "formatVersion": 1,
+  "organizationName": "ATOM X Design",
+  "description": "Tarjeta de Fidelización",
+  "logoText": "ATOM X",
+  "foregroundColor": "rgb(255, 255, 255)",
+  "backgroundColor": "rgb(10, 10, 20)",
+  "labelColor": "rgb(160, 160, 255)",
+  "storeCard": {
+    "primaryFields": [
+      {
+        "key": "sellos",
+        "label": "Sellos conseguidos",
+        "value": 0,
+        "changeMessage": "¡Nuevo sello añadido! Llevas %@"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "key": "nombre",
+        "label": "Cliente",
+        "value": "NOMBRE_DEL_CLIENTE"
+      },
+      {
+        "key": "meta",
+        "label": "Meta",
+        "value": "10 sellos = regalo"
+      }
+    ],
+    "auxiliaryFields": [
+      {
+        "key": "siguiente_recompensa",
+        "label": "Próxima recompensa",
+        "value": "A 10 sellos"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "info",
+        "label": "Información",
+        "value": "Acumula 10 sellos y consigue tu recompensa. Válido en todos nuestros servicios."
+      },
+      {
+        "key": "contacto",
+        "label": "Contacto",
+        "value": "hola@atomxdesign.com"
+      }
+    ]
+  },
+  "barcode": {
+    "message": "ID-UNICO-CLIENTE",
+    "format": "PKBarcodeFormatQR",
+    "messageEncoding": "iso-8859-1",
+    "altText": "ID del cliente"
+  }
+}
