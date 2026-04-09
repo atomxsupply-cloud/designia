@@ -1,8 +1,50 @@
 export const config = { runtime: 'edge' };
 
+// ── RATE LIMITING ───────────────────────────────────────────────────────
+// Máx 10 análisis por IP en 5 minutos.
+// La Map vive en memoria del isolate — protección básica pero efectiva.
+const rateLimitStore = new Map();
+const RATE_WINDOW_MS = 5 * 60 * 1000; // 5 minutos
+const RATE_MAX = 10;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitStore.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return true;
+  }
+
+  entry.count++;
+
+  // Limpiar entradas caducadas ocasionalmente
+  if (rateLimitStore.size > 500) {
+    for (const [k, v] of rateLimitStore) {
+      if (now > v.resetAt) rateLimitStore.delete(k);
+    }
+  }
+
+  return entry.count <= RATE_MAX;
+}
+
+// ── HANDLER ─────────────────────────────────────────────────────────────
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+  }
+
+  // Rate limit por IP
+  const ip =
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('cf-connecting-ip') ||
+    'unknown';
+
+  if (!checkRateLimit(ip)) {
+    return new Response(
+      JSON.stringify({ error: 'Demasiadas peticiones. Espera unos minutos e inténtalo de nuevo.' }),
+      { status: 429, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   let body;
