@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATOM X - Panel Interno</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --bg:#0a0a0a;
+  --card:#111111;
+  --card-2:#171717;
+  --line:#262626;
+  --text:#f7f7f7;
+  --muted:#a9a9a9;
+  --accent:#ff4d00;
+  --accent-soft:rgba(255,77,0,0.16);
+  --green:#00e676;
+  --red:#ff6b6b;
+  --shadow:0 20px 60px rgba(0,0,0,0.35);
+}
+body {
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255,77,0,0.18), transparent 28%),
+    radial-gradient(circle at right center, rgba(255,122,24,0.12), transparent 22%),
+    linear-gradient(180deg, #090909 0%, #0d0d0d 100%);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  padding:20px;
+}
+.wrap {
+  max-width:1380px;
+  margin:0 auto;
+  display:grid;
+  gap:18px;
+}
+.hero,
+.card {
+  background:rgba(17,17,17,0.94);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+}
+.hero {
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.mark {
+  width:62px;
+  height:62px;
+  border-radius:18px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg, #ff4d00, #ff7a18);
+  color:#fff;
+  font-family:'Space Mono',monospace;
+  font-weight:700;
+  letter-spacing:2px;
+  box-shadow:0 14px 30px rgba(255,77,0,0.25);
+}
+h1 {
+  font-size:2rem;
+  font-family:'Space Mono',monospace;
+  letter-spacing:1px;
+}
+h2 { font-size:1.25rem; }
+h3 { font-size:1rem; }
+.muted { color:var(--muted); }
+.status {
+  min-height:46px;
+  padding:0 16px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  background:var(--accent-soft);
+  border:1px solid rgba(255,77,0,0.3);
+  color:var(--accent);
+  font-family:'Space Mono',monospace;
+  font-size:12px;
+}
+.layout {
+  display:grid;
+  grid-template-columns:minmax(340px, 520px) minmax(0, 1fr);
+  gap:18px;
+}
+.card { padding:22px; }
+.card-head {
+  display:grid;
+  gap:6px;
+  margin-bottom:18px;
+}
+.form-grid {
+  display:grid;
+  gap:16px;
+}
+.field {
+  display:grid;
+  gap:8px;
+}
+label {
+  font-size:0.95rem;
+  font-weight:700;
+}
+input,
+textarea,
+select {
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--card-2);
+  color:var(--text);
+  padding:14px 16px;
+  font:inherit;
+}
+textarea { min-height:108px; resize:vertical; }
+input:focus,
+textarea:focus,
+select:focus {
+  outline:none;
+  border-color:rgba(255,77,0,0.45);
+  box-shadow:0 0 0 4px rgba(255,77,0,0.12);
+}
+.radio-grid {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:10px;
+}
+.radio-option {
+  position:relative;
+}
+.radio-option input {
+  position:absolute;
+  inset:0;
+  opacity:0;
+}
+.radio-option label {
+  min-height:56px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:var(--card-2);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.radio-option input:checked + label {
+  border-color:rgba(255,77,0,0.45);
+  background:linear-gradient(135deg, rgba(255,77,0,0.22), rgba(255,122,24,0.22));
+  color:#fff;
+}
+.actions {
+  display:flex;
+  gap:12px;
+}
+.btn {
+  min-height:56px;
+  padding:0 18px;
+  border:none;
+  border-radius:18px;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+}
+.btn-primary {
+  background:linear-gradient(135deg, #ff4d00, #ff7a18);
+  color:white;
+}
+.btn-ghost {
+  background:transparent;
+  color:var(--text);
+  border:1px solid var(--line);
+}
+.btn:disabled { opacity:.55; cursor:not-allowed; }
+.message {
+  min-height:22px;
+  font-size:14px;
+}
+.message.success { color:var(--green); }
+.message.error { color:var(--red); }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:12px;
+}
+.stat {
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card-2);
+  padding:16px;
+}
+.big {
+  margin-top:8px;
+  font-size:2rem;
+  font-weight:700;
+  font-family:'Space Mono',monospace;
+}
+.panels {
+  margin-top:12px;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:12px;
+}
+.summary-box,
+.response {
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:var(--card-2);
+  padding:16px;
+}
+.summary-list,
+.responses {
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
+.summary-row {
+  display:grid;
+  gap:6px;
+}
+.summary-head {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:13px;
+  font-weight:700;
+}
+.bar {
+  width:100%;
+  height:10px;
+  border-radius:999px;
+  background:#0d0d0d;
+  overflow:hidden;
+}
+.bar > span {
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg, #ff4d00, #ff7a18);
+}
+.responses { margin-top:16px; }
+.response-head {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.response-head strong {
+  font-size:1rem;
+}
+.tags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.tag {
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(255,77,0,0.1);
+  color:#ff8a50;
+  border:1px solid rgba(255,77,0,0.14);
+  font-size:12px;
+  font-weight:700;
+}
+.note {
+  margin-top:10px;
+  line-height:1.45;
+  font-size:14px;
+}
+@media (max-width: 1160px) {
+  .layout,
+  .stats,
+  .panels { grid-template-columns:1fr; }
+  .hero { flex-direction:column; align-items:flex-start; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="brand">
+      <div class="mark">ATOM</div>
+      <div>
+        <h1>Panel Interno ATOM X</h1>
+        <p class="muted">Separado de Aura. Aquí centralizamos las valoraciones internas de la app.</p>
+      </div>
+    </div>
+    <div class="status" id="refreshState">Cargando panel...</div>
+  </section>
+
+  <section class="layout">
+    <article class="card">
+      <div class="card-head">
+        <h2>Nuevo feedback</h2>
+        <p class="muted">Rellenadlo mientras habláis con el tatuador o revisáis una demo.</p>
+      </div>
+
+      <form id="feedbackForm" class="form-grid">
+        <div class="field">
+          <label for="nombre_tatuador">Nombre tatuador</label>
+          <input id="nombre_tatuador" name="nombre_tatuador" type="text" maxlength="120" required placeholder="Ej: Laura Blackline">
+        </div>
+
+        <div class="field">
+          <label>¿Piensas que la elección de los colores es correcta?</label>
+          <div class="radio-grid">
+            <div class="radio-option">
+              <input id="colores_si" type="radio" name="eleccion_colores_correcta" value="si" required>
+              <label for="colores_si">Sí</label>
+            </div>
+            <div class="radio-option">
+              <input id="colores_no" type="radio" name="eleccion_colores_correcta" value="no">
+              <label for="colores_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="tintas_vistas">Opcional: qué tintas le has visto utilizando</label>
+          <textarea id="tintas_vistas" name="tintas_vistas" placeholder="Dynamic, Panthera, World Famous..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="precio_aprox_app">Precio aprox app</label>
+          <input id="precio_aprox_app" name="precio_aprox_app" type="text" maxlength="80" placeholder="Ej: 9,99€/mes o 79€ pago único">
+        </div>
+
+        <div class="field">
+          <label for="apariencia_app">Apariencia de la app</label>
+          <select id="apariencia_app" name="apariencia_app" required>
+            <option value="">Selecciona una opción</option>
+            <option value="muy-buena">Muy buena</option>
+            <option value="buena">Buena</option>
+            <option value="normal">Normal</option>
+            <option value="mejorable">Mejorable</option>
+            <option value="floja">Floja</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="posibles_mejoras">Posibles mejoras</label>
+          <textarea id="posibles_mejoras" name="posibles_mejoras" placeholder="Qué tocarías o qué echas en falta"></textarea>
+        </div>
+
+        <div class="field">
+          <label>¿Te parece útil?</label>
+          <div class="radio-grid">
+            <div class="radio-option">
+              <input id="util_si" type="radio" name="te_parece_util" value="si" required>
+              <label for="util_si">Sí</label>
+            </div>
+            <div class="radio-option">
+              <input id="util_no" type="radio" name="te_parece_util" value="no">
+              <label for="util_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="submitBtn" type="submit">Guardar valoración</button>
+          <button class="btn btn-ghost" id="resetBtn" type="button">Limpiar</button>
+        </div>
+        <p class="message" id="formMessage"></p>
+      </form>
+    </article>
+
+    <article class="card">
+      <div class="card-head">
+        <h2>Resumen y organización</h2>
+        <p class="muted">Lo veis todo aquí sin mezclarlo con otros proyectos.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="muted">Total respuestas</div>
+          <div class="big" id="totalResponses">0</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Colores correctos</div>
+          <div class="big" id="colorsYes">0</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Les parece útil</div>
+          <div class="big" id="usefulYes">0</div>
+        </div>
+        <div class="stat">
+          <div class="muted">Apariencia top</div>
+          <div class="big" id="looksGood">0</div>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="summary-box">
+          <h3>Apariencia</h3>
+          <div class="summary-list" id="appearanceSummary"></div>
+        </div>
+        <div class="summary-box">
+          <h3>Utilidad</h3>
+          <div class="summary-list" id="usefulSummary"></div>
+        </div>
+      </div>
+
+      <div class="responses" id="latestResponses"></div>
+    </article>
+  </section>
+</main>
+
+<script>
+const form = document.getElementById('feedbackForm');
+const formMessage = document.getElementById('formMessage');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+const refreshState = document.getElementById('refreshState');
+const totalResponses = document.getElementById('totalResponses');
+const colorsYes = document.getElementById('colorsYes');
+const usefulYes = document.getElementById('usefulYes');
+const looksGood = document.getElementById('looksGood');
+const appearanceSummary = document.getElementById('appearanceSummary');
+const usefulSummary = document.getElementById('usefulSummary');
+const latestResponses = document.getElementById('latestResponses');
+
+const LABELS = {
+  eleccion_colores_correcta: { si: 'Sí', no: 'No' },
+  te_parece_util: { si: 'Sí', no: 'No' },
+  apariencia_app: {
+    'muy-buena': 'Muy buena',
+    'buena': 'Buena',
+    'normal': 'Normal',
+    'mejorable': 'Mejorable',
+    'floja': 'Floja',
+  },
+};
+
+function label(group, value) {
+  return LABELS[group]?.[value] || value || 'Sin dato';
+}
+
+function formatDate(value) {
+  return value ? new Date(value).toLocaleString('es-ES') : '';
+}
+
+function renderSummary(target, data, group) {
+  const entries = Object.entries(data || {}).sort((a, b) => b[1] - a[1]);
+  const max = entries.length ? entries[0][1] : 1;
+  target.innerHTML = entries.map(([key, value]) => `
+    <div class="summary-row">
+      <div class="summary-head">
+        <span>${label(group, key)}</span>
+        <span>${value}</span>
+      </div>
+      <div class="bar"><span style="width:${(value / max) * 100}%"></span></div>
+    </div>
+  `).join('') || '<p class="muted">Sin datos todavía.</p>';
+}
+
+async function loadResponses() {
+  try {
+    refreshState.textContent = 'Actualizando panel...';
+    const response = await fetch('/api/atom-feedback/responses');
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'No se pudo cargar el panel');
+
+    totalResponses.textContent = data.total || 0;
+    colorsYes.textContent = data.summary?.eleccion_colores_correcta?.si || 0;
+    usefulYes.textContent = data.summary?.te_parece_util?.si || 0;
+    looksGood.textContent = (data.summary?.apariencia_app?.['muy-buena'] || 0) + (data.summary?.apariencia_app?.['buena'] || 0);
+
+    renderSummary(appearanceSummary, data.summary?.apariencia_app, 'apariencia_app');
+    renderSummary(usefulSummary, data.summary?.te_parece_util, 'te_parece_util');
+
+    latestResponses.innerHTML = (data.latest || []).map((item) => `
+      <article class="response">
+        <div class="response-head">
+          <strong>${item.nombre_tatuador}</strong>
+          <span class="muted">${formatDate(item.submitted_at)}</span>
+        </div>
+        <div class="tags">
+          <span class="tag">Colores: ${label('eleccion_colores_correcta', item.eleccion_colores_correcta)}</span>
+          <span class="tag">Utilidad: ${label('te_parece_util', item.te_parece_util)}</span>
+          <span class="tag">Apariencia: ${label('apariencia_app', item.apariencia_app)}</span>
+          ${item.precio_aprox_app ? `<span class="tag">Precio: ${item.precio_aprox_app}</span>` : ''}
+        </div>
+        ${item.tintas_vistas ? `<p class="note"><strong>Tintas vistas:</strong> ${item.tintas_vistas}</p>` : ''}
+        ${item.posibles_mejoras ? `<p class="note"><strong>Mejoras:</strong> ${item.posibles_mejoras}</p>` : ''}
+      </article>
+    `).join('') || '<p class="muted">Todavía no hay respuestas guardadas.</p>';
+
+    refreshState.textContent = `ATOM listo · ${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+  } catch (error) {
+    refreshState.textContent = error.message || 'Error actualizando panel';
+  }
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  formMessage.textContent = '';
+  formMessage.className = 'message';
+  submitBtn.disabled = true;
+
+  const payload = Object.fromEntries(new FormData(form).entries());
+
+  try {
+    const response = await fetch('/api/atom-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'No se pudo guardar');
+
+    form.reset();
+    formMessage.textContent = 'Valoración guardada correctamente';
+    formMessage.className = 'message success';
+    await loadResponses();
+  } catch (error) {
+    formMessage.textContent = error.message || 'No se pudo guardar la valoración';
+    formMessage.className = 'message error';
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+resetBtn.addEventListener('click', () => {
+  form.reset();
+  formMessage.textContent = '';
+  formMessage.className = 'message';
+});
+
+loadResponses();
+setInterval(loadResponses, 5000);
+</script>
+</body>
+</html>

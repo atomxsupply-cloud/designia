@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -7,41 +7,141 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ATOM X Colors">
 <meta name="theme-color" content="#0a0a0a">
-<title>ATOM X · Color Picker</title>
+<title>ATOM X - Color Picker</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root {
   --bg:#0a0a0a; --card:#111; --border:#1e1e1e;
   --accent:#ff4d00; --accent-dim:rgba(255,77,0,0.1); --accent-soft:rgba(255,77,0,0.3);
-  --text:#f0f0f0; --muted:#888; --dim:#444;
+  --text:#f7f7f7; --muted:#c2c2c2; --dim:#8f8f8f;
   --green:#00e676; --yellow:#ffd600;
 }
 body {
   background:var(--bg); color:var(--text);
   font-family:'DM Sans',sans-serif;
-  min-height:100vh; max-width:430px; margin:0 auto;
-  overflow-x:hidden;
+  min-height:100vh; max-width:none; margin:0;
+  overflow-x:hidden; line-height:1.55;
+}
+.app-shell button:focus-visible,
+.app-shell input:focus-visible,
+.app-shell textarea:focus-visible,
+.app-shell select:focus-visible {
+  outline:2px solid rgba(255,122,24,0.95);
+  outline-offset:2px;
+}
+.app-shell {
+  width:min(100%, 1180px);
+  margin:0 auto;
+  min-height:100vh;
+}
+.app-shell.locked {
+  filter:blur(10px);
+  pointer-events:none;
+  user-select:none;
+}
+.access-overlay {
+  position:fixed; inset:0; z-index:300;
+  background:rgba(0,0,0,0.82);
+  display:none; align-items:center; justify-content:center;
+  padding:18px;
+}
+.access-overlay.show { display:flex; }
+.access-card {
+  width:min(100%, 360px);
+  background:#0f0f0f;
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:22px 18px 18px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.access-kicker {
+  font-family:'Space Mono',monospace;
+  font-size:10px; letter-spacing:2px; color:var(--accent);
+  text-transform:uppercase;
+}
+.access-title {
+  font-size:24px; font-weight:700; margin:8px 0 8px;
+}
+.access-text {
+  font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:14px;
+}
+.access-input {
+  width:100%; margin-top:10px;
+  background:var(--card); border:1px solid var(--border);
+  color:var(--text); border-radius:14px;
+  padding:14px 14px; font-size:16px; outline:none;
+}
+.access-input:focus { border-color:var(--accent-soft); }
+.access-error {
+  min-height:18px; margin-top:10px;
+  color:#ff8a65; font-size:12px;
+}
+.access-btn {
+  width:100%; margin-top:10px;
+  border:none; border-radius:14px;
+  background:linear-gradient(135deg, #ff4d00, #ff7a18);
+  color:white; padding:14px 16px; font-size:15px; font-weight:700;
+}
+.online-strip {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:4px 12px 0;
+}
+.online-list {
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.online-pill {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 9px; border-radius:999px;
+  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.03);
+  font-size:11px; color:var(--muted);
+  font-family:'Space Mono',monospace;
+}
+.online-dot {
+  width:6px; height:6px; border-radius:999px; background:var(--green);
+  box-shadow:0 0 8px rgba(0,230,118,0.5);
+}
+.session-chip {
+  font-family:'Space Mono',monospace;
+  font-size:10px; color:var(--accent);
 }
 
 /* HEADER */
 .header {
-  padding:16px 20px 12px;
-  border-bottom:1px solid var(--border);
+  padding:8px 12px 6px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
   background:var(--bg);
   position:sticky; top:0; z-index:100;
   display:flex; align-items:center; justify-content:space-between;
 }
 .logo-text { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; letter-spacing:3px; color:var(--accent); }
-.logo-sub { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:2px; margin-top:2px; }
+.logo-sub { font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:2px; margin-top:2px; }
 .header-badge {
   font-family:'Space Mono',monospace; font-size:8px;
   color:var(--accent); background:var(--accent-dim);
   border:1px solid var(--accent-soft);
   padding:3px 8px; border-radius:20px; letter-spacing:1px;
 }
+.header-actions {
+  display:flex; align-items:center; gap:8px;
+}
+.header-tool-btn {
+  width:34px; height:34px;
+  border-radius:12px;
+  border:1px solid var(--accent-soft);
+  background:rgba(255,77,0,0.08);
+  color:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; cursor:pointer;
+}
+.header-tool-btn.active {
+  background:rgba(255,77,0,0.18);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.18) inset;
+}
 .counter-wrap {
-  text-align:center; padding:8px 20px 0;
+  display:none;
+  text-align:center; padding:4px 12px 0;
   font-family:'Space Mono',monospace;
 }
 .counter-num {
@@ -58,7 +158,7 @@ body {
 /* ATOMX CHARACTER */
 .atomx-wrap {
   display:flex; flex-direction:column; align-items:center;
-  padding:28px 20px 10px;
+  padding:12px 16px 6px;
 }
 .atomx-svg-wrap {
   position:relative; width:110px; height:110px;
@@ -119,7 +219,7 @@ body {
 .bubble-text.fade { opacity:0; }
 
 /* CONTENT */
-.content { padding:12px 16px 40px; }
+.content { padding:10px 16px 36px; }
 
 /* SKIN SELECTOR */
 .skin-selector {
@@ -130,6 +230,7 @@ body {
   color:var(--dim); letter-spacing:2px; margin-bottom:10px;
   display:block;
 }
+.skin-label { font-size:10px; }
 .skin-options {
   display:flex; gap:8px;
 }
@@ -146,10 +247,298 @@ body {
   width:22px; height:22px; border-radius:50%;
   border:2px solid rgba(255,255,255,0.15);
 }
-.skin-name { font-size:8px; color:var(--muted); font-family:'Space Mono',monospace; text-align:center; letter-spacing:0.5px; }
+.skin-name { font-size:10px; color:var(--muted); font-family:'Space Mono',monospace; text-align:center; letter-spacing:0.5px; }
 .skin-btn.active .skin-name { color:var(--accent); }
-.skin-lock-hint { font-size:9px; color:var(--dim); text-align:center; margin-top:6px; font-family:'Space Mono',monospace; display:none; }
+.skin-lock-hint { font-size:10px; color:var(--dim); text-align:center; margin-top:6px; font-family:'Space Mono',monospace; display:none; }
 .skin-lock-hint.visible { display:block; }
+
+/* BRAND SELECTOR */
+.brand-selector { margin:14px 0 18px; }
+.brand-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.brand-title {
+  font-family:'Space Mono',monospace;
+  font-size:10px; color:var(--dim); letter-spacing:2px;
+  text-transform:uppercase;
+}
+.brand-select {
+  flex:1;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:13px;
+  outline:none;
+  appearance:none;
+}
+.brand-hint { margin-top:6px; font-size:12px; color:var(--muted); line-height:1.55; }
+
+/* PALETTE IMPORT */
+.palette-card {
+  margin:0 0 14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+  border-radius:18px;
+  overflow:hidden;
+}
+.palette-head {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 14px;
+  cursor:pointer;
+}
+.palette-kicker {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:1.8px; color:var(--accent);
+  text-transform:uppercase;
+}
+.palette-title {
+  font-size:14px; font-weight:700; color:var(--text); margin-top:3px;
+}
+.palette-body {
+  display:none;
+  border-top:1px solid var(--border);
+  padding:12px 14px 14px;
+}
+.palette-body.open { display:block; }
+.palette-text {
+  font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:10px;
+}
+.palette-actions {
+  display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center;
+}
+.palette-upload-btn, .palette-clear-btn {
+  border:none; background:var(--accent); color:#fff;
+  border-radius:12px; padding:10px 12px;
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px;
+  cursor:pointer;
+}
+.palette-clear-btn {
+  background:rgba(255,255,255,0.05);
+  color:var(--muted);
+  border:1px solid var(--border);
+}
+.palette-color-input {
+  width:42px; height:42px; padding:0;
+  border:none; background:transparent; cursor:pointer;
+}
+.palette-file-input { display:none; }
+.palette-status {
+  margin-top:10px; font-size:11px; color:var(--dim); font-family:'Space Mono',monospace;
+}
+.palette-selected {
+  margin-top:10px;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+}
+.palette-selected-color {
+  width:24px; height:24px; border-radius:999px;
+  border:2px solid rgba(255,255,255,0.7);
+}
+.palette-selected-text {
+  font-size:12px; color:var(--muted); line-height:1.55;
+}
+.palette-grid {
+  margin-top:10px;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+}
+.palette-swatch {
+  border:1px solid var(--border);
+  border-radius:14px; padding:8px; background:var(--card);
+  cursor:pointer;
+}
+.palette-swatch.active {
+  border-color:rgba(255,77,0,0.45);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.18) inset;
+}
+.palette-swatch-color {
+  width:100%; height:42px; border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.palette-swatch-name {
+  margin-top:6px; font-size:9px; color:var(--text); font-weight:700;
+}
+.palette-swatch-meta {
+  margin-top:2px; font-size:8px; color:var(--muted); font-family:'Space Mono',monospace;
+}
+
+/* FEEDBACK CHAT */
+.feedback-card {
+  margin:0 0 14px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border-radius:18px;
+  overflow:hidden;
+}
+.feedback-head {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 14px;
+  cursor:pointer;
+}
+.feedback-kicker {
+  font-family:'Space Mono',monospace;
+  font-size:9px; letter-spacing:1.8px; color:var(--accent);
+  text-transform:uppercase;
+}
+.feedback-title {
+  font-size:14px; font-weight:700; color:var(--text); margin-top:3px;
+}
+.feedback-toggle {
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--muted);
+  border-radius:999px;
+  width:28px; height:28px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+}
+.feedback-body {
+  display:none;
+  border-top:1px solid var(--border);
+  padding:12px 14px 14px;
+}
+.feedback-body.open { display:block; }
+.feedback-msg {
+  border:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.03);
+  border-radius:14px;
+  padding:9px 10px;
+}
+.feedback-meta {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  font-size:9px; color:var(--dim); font-family:'Space Mono',monospace; letter-spacing:1px;
+  margin-bottom:4px;
+}
+.feedback-text {
+  font-size:12px; line-height:1.6; color:var(--muted);
+}
+.feedback-empty {
+  font-size:12px; color:var(--muted); line-height:1.65; margin-bottom:10px;
+}
+.feedback-input {
+  width:100%;
+  min-height:82px;
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:14px;
+  padding:12px;
+  resize:none;
+  outline:none;
+  font-size:14px;
+  line-height:1.6;
+}
+.feedback-input:focus { border-color:var(--accent-soft); }
+.feedback-row {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:10px;
+}
+.feedback-count {
+  font-size:11px; color:var(--muted); font-family:'Space Mono',monospace;
+}
+.feedback-send {
+  border:none; background:var(--accent); color:#fff;
+  border-radius:12px; padding:10px 14px;
+  font-family:'Space Mono',monospace; font-size:11px; font-weight:700; letter-spacing:1.4px;
+  cursor:pointer;
+}
+.feedback-send:disabled { opacity:0.45; cursor:not-allowed; }
+.feedback-reward {
+  display:none; margin-top:10px;
+  border:1px solid rgba(0,230,118,0.24);
+  background:rgba(0,230,118,0.08);
+  border-radius:14px; padding:12px;
+}
+.feedback-reward.show { display:block; }
+.feedback-reward-title {
+  font-size:11px; font-weight:700; color:var(--green); margin-bottom:4px;
+}
+.feedback-reward-code {
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:8px;
+  background:#0c1511;
+  border:1px dashed rgba(0,230,118,0.35);
+  color:#dfffea;
+  border-radius:12px;
+  padding:8px 10px;
+  font-family:'Space Mono',monospace; font-size:18px; font-weight:700; letter-spacing:3px;
+}
+.feedback-reward-copy {
+  border:none; background:transparent; color:var(--green);
+  font-size:10px; font-family:'Space Mono',monospace; cursor:pointer;
+}
+
+/* ACCESS OVERLAY */
+.access-overlay {
+  position:fixed; inset:0; z-index:1200;
+  background:rgba(0,0,0,0.96);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+.access-box {
+  width:100%;
+  max-width:380px;
+  background:#111;
+  border:1px solid #1e1e1e;
+  border-radius:24px;
+  padding:28px 22px 24px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.access-kicker {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--accent);
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+.access-title {
+  font-size:24px;
+  font-weight:700;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.access-sub {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:18px;
+}
+.access-input {
+  width:100%;
+  background:#0c0c0c;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:14px 14px;
+  border-radius:14px;
+  font-size:15px;
+  outline:none;
+  margin-bottom:12px;
+}
+.access-input:focus {
+  border-color:var(--accent-soft);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.18) inset;
+}
+.access-btn {
+  width:100%;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  border-radius:14px;
+  padding:14px;
+  font-family:'Space Mono',monospace;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:2px;
+  cursor:pointer;
+}
+.access-error {
+  display:none;
+  margin-top:12px;
+  font-size:12px;
+  color:#ff9a76;
+}
 
 /* CONSENT OVERLAY */
 .consent-overlay {
@@ -215,6 +604,11 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 }
 .consent-btn-reject:hover { color:#888; }
 
+/* Override final del acceso actual */
+.access-overlay { display:none !important; }
+.access-overlay.show { display:flex !important; }
+.access-error { display:block !important; }
+
 /* UPLOAD ZONE */
 .upload-zone {
   border:2px dashed var(--border);
@@ -227,9 +621,100 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 .upload-zone.has-image { border-style:solid; border-color:var(--accent); padding:0; }
 .upload-icon { font-size:32px; margin-bottom:8px; }
 .upload-title { font-size:14px; font-weight:700; margin-bottom:4px; }
-.upload-sub { font-size:11px; color:var(--muted); }
+.upload-sub { font-size:12px; color:var(--muted); line-height:1.55; }
 #file-input { display:none; }
-#preview-img { width:100%; border-radius:14px; display:none; max-height:280px; object-fit:cover; }
+#preview-img {
+  width:100%;
+  border-radius:14px;
+  display:none;
+  height:320px;
+  max-height:320px;
+  object-fit:contain;
+  object-position:center center;
+  transform:translate(var(--preview-x, 0px), var(--preview-y, 0px)) scale(var(--preview-scale, 1));
+  transform-origin:center center;
+}
+.preview-overlay {
+  position:absolute;
+  inset:0;
+  display:none;
+  pointer-events:none;
+  border-radius:14px;
+  transform:translate(var(--preview-x, 0px), var(--preview-y, 0px)) scale(var(--preview-scale, 1));
+  transform-origin:center center;
+}
+.upload-zone.has-image .preview-overlay { display:block; }
+.preview-controls {
+  display:none;
+  margin:0 0 12px;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,0.03);
+}
+.preview-controls.open { display:block; }
+.preview-controls-grid {
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+.preview-gesture-hint {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+}
+.preview-gesture-hint strong {
+  color:var(--text);
+}
+.preview-controls-actions {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  gap:10px;
+}
+.preview-reset-btn {
+  border:1px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  border-radius:12px;
+  padding:8px 12px;
+  font-size:11px;
+  font-family:'Space Mono',monospace;
+}
+.preview-marker {
+  position:absolute;
+  width:44px;
+  transform:translate(-50%, -50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+}
+.preview-line {
+  width:1px;
+  height:20px;
+  background:rgba(255,255,255,0.9);
+  box-shadow:0 0 6px rgba(255,255,255,0.35);
+}
+.preview-dot {
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:2px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,0.45), 0 6px 12px rgba(0,0,0,0.3);
+}
+.preview-label {
+  background:rgba(10,10,10,0.75);
+  color:#fff;
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:999px;
+  padding:3px 7px;
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  letter-spacing:0.5px;
+  white-space:nowrap;
+}
 
 /* ANALYZE BTN */
 .analyze-btn {
@@ -247,7 +732,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 .loading { display:none; padding:20px 0 10px; }
 .loading-steps { display:flex; flex-direction:column; gap:6px; }
 .loading-step {
-  font-size:12px; color:var(--dim);
+  font-size:13px; color:var(--muted);
   padding:10px 14px; border-radius:10px;
   border:1px solid var(--border); background:var(--card);
   transition:all 0.3s;
@@ -261,7 +746,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 .results { display:none; }
 
 .section-title {
-  font-family:'Space Mono',monospace; font-size:9px;
+  font-family:'Space Mono',monospace; font-size:10px;
   color:var(--dim); letter-spacing:3px; text-transform:uppercase;
   margin-bottom:12px; margin-top:20px;
 }
@@ -273,7 +758,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
   display:flex; gap:10px; align-items:flex-start;
 }
 .skin-alert-icon { font-size:16px; flex-shrink:0; }
-.skin-alert-text { font-size:12px; color:var(--muted); line-height:1.5; }
+.skin-alert-text { font-size:13px; color:var(--muted); line-height:1.65; }
 
 /* COLOR SWATCHES */
 .colors-grid {
@@ -284,11 +769,97 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
   border-radius:12px; overflow:hidden;
   border:1px solid var(--border); background:var(--card);
 }
+.color-swatch.target {
+  border-color:rgba(255,77,0,0.35);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.15) inset;
+}
 .swatch-color { height:56px; width:100%; }
 .swatch-info { padding:7px; }
-.swatch-name { font-size:10px; font-weight:700; margin-bottom:2px; }
-.swatch-hex { font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); }
-.swatch-pct { font-family:'Space Mono',monospace; font-size:8px; color:var(--accent); margin-top:1px; }
+.swatch-name { font-size:11px; font-weight:700; margin-bottom:2px; }
+.swatch-hex { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+.swatch-pct { font-family:'Space Mono',monospace; font-size:9px; color:var(--accent); margin-top:1px; }
+
+.color-map {
+  position:relative;
+  height:220px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.18), rgba(0,0,0,0.3)),
+    linear-gradient(90deg,
+      #ff4d4d 0%,
+      #ff9a3c 8%,
+      #ffd84d 16%,
+      #c8ff4d 24%,
+      #57e36f 34%,
+      #35d6c8 48%,
+      #3b82f6 64%,
+      #7c3aed 78%,
+      #db2777 92%,
+      #ff4d4d 100%);
+  margin-bottom:12px;
+}
+.color-map::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.08) 42%, rgba(0,0,0,0.32) 100%);
+  pointer-events:none;
+}
+.color-map-axis {
+  display:flex;
+  justify-content:space-between;
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  color:var(--dim);
+  letter-spacing:1px;
+  margin-top:4px;
+  margin-bottom:14px;
+}
+.map-dot {
+  position:absolute;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,0.9);
+  box-shadow:0 8px 18px rgba(0,0,0,0.35);
+  transform:translate(-50%, -50%);
+  cursor:pointer;
+  z-index:2;
+}
+.map-dot.detected { width:16px; height:16px; }
+.map-dot.target {
+  width:20px;
+  height:20px;
+  border-color:#0a0a0a;
+  box-shadow:0 0 0 2px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.3);
+}
+.map-legend {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.map-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--card);
+  font-size:10px;
+  color:var(--muted);
+  font-family:'Space Mono',monospace;
+  letter-spacing:.5px;
+}
+.map-pill-dot {
+  width:10px;
+  height:10px;
+  border-radius:999px;
+}
 
 /* TINTA CARDS */
 .tinta-card {
@@ -299,7 +870,21 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 .tinta-left { display:flex; gap:12px; align-items:center; }
 .tinta-color-dot { width:34px; height:34px; border-radius:10px; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); }
 .tinta-nombre { font-size:13px; font-weight:700; margin-bottom:2px; }
-.tinta-marca { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.tinta-marca { font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+.tinta-real {
+  font-size:14px;
+  font-weight:800;
+  line-height:1.3;
+  color:#fff;
+}
+.tinta-meta-line {
+  margin-top:5px;
+  font-size:9px;
+  color:var(--muted);
+  font-family:'Space Mono',monospace;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
 .tinta-precio { font-size:16px; font-weight:700; color:var(--accent); }
 .tinta-precio-sub { font-size:9px; color:var(--dim); text-align:right; font-family:'Space Mono',monospace; }
 .tinta-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
@@ -310,25 +895,166 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 .tag-marca { background:rgba(41,121,255,0.1); color:#2979ff; border:1px solid rgba(41,121,255,0.3); }
 .tag-uso { background:rgba(0,230,118,0.1); color:var(--green); border:1px solid rgba(0,230,118,0.3); }
 .tinta-razon { font-size:11px; color:var(--muted); line-height:1.5; }
-.comprar-btn {
-  width:100%; padding:10px; margin-top:10px;
-  background:transparent; border:1px solid var(--accent);
-  border-radius:10px; color:var(--accent);
-  font-family:'Space Mono',monospace; font-size:10px;
-  font-weight:700; letter-spacing:2px; cursor:pointer; transition:all 0.2s;
+.tinta-select-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
 }
-.comprar-btn:active { background:var(--accent); color:#fff; }
+.tinta-option {
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.tinta-option.primary {
+  background:rgba(255,77,0,0.1);
+  border-color:rgba(255,77,0,0.25);
+}
+.tinta-option.selected {
+  background:rgba(255,77,0,0.18);
+  border-color:rgba(255,77,0,0.62);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.22) inset;
+}
+.tinta-option:active {
+  transform:scale(0.995);
+}
+.tinta-check {
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.tinta-check input {
+  margin-top:2px;
+  accent-color:var(--accent);
+}
+.tinta-check label {
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.45;
+  cursor:pointer;
+}
+.tinta-option.selected .tinta-check label,
+.tinta-option.selected .tinta-meta-line,
+.tinta-option.selected .tinta-real {
+  color:var(--text);
+}
+.selection-tools {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:12px 0 14px;
+}
+.selection-btn {
+  border:1px solid var(--accent-soft);
+  background:rgba(255,77,0,0.08);
+  color:var(--text);
+  border-radius:12px;
+  padding:10px 12px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+.selection-summary {
+  margin-top:10px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.learn-more {
+  margin-top:14px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(255,255,255,0.03);
+  overflow:hidden;
+}
+.learn-more summary {
+  list-style:none;
+  cursor:pointer;
+  padding:12px 14px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:1.4px;
+  color:var(--muted);
+}
+.learn-more summary::-webkit-details-marker { display:none; }
+.learn-more-body {
+  padding:0 14px 14px;
+}
+.learn-more-copy {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.65;
+  margin-bottom:12px;
+}
+.hex-tools {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.hex-input {
+  flex:1;
+  min-width:170px;
+  background:#121212;
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  padding:11px 12px;
+  font-size:13px;
+}
+.hex-match-box {
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.hex-match-card {
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);
+  border-radius:12px;
+  padding:10px 12px;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.hex-match-card.selected {
+  background:rgba(255,77,0,0.18);
+  border-color:rgba(255,77,0,0.62);
+  box-shadow:0 0 0 1px rgba(255,77,0,0.22) inset;
+}
+.hex-match-card:active {
+  transform:scale(0.995);
+}
+.hex-match-title {
+  font-size:13px;
+  color:var(--text);
+  font-weight:700;
+}
+.hex-match-meta {
+  margin-top:4px;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.5;
+}
 
 /* RESUMEN */
 .resumen-card {
-  background:var(--accent-dim); border:1px solid var(--accent-soft);
-  border-radius:14px; padding:16px; margin-bottom:16px; margin-top:8px;
+  background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:14px; padding:12px 14px; margin-bottom:14px; margin-top:6px;
 }
-.resumen-title { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:12px; }
-.resumen-row { display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; }
+.resumen-title { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:2px; margin-bottom:10px; }
+.resumen-row { display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; }
 .resumen-total {
-  display:flex; justify-content:space-between; font-size:16px; font-weight:700;
-  border-top:1px solid var(--accent-soft); padding-top:10px; margin-top:6px; color:var(--accent);
+  display:flex; justify-content:space-between; font-size:12px; font-weight:700;
+  border-top:1px solid var(--border); padding-top:8px; margin-top:8px; color:#d9d9d9;
 }
 
 /* RESET */
@@ -353,61 +1079,18 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 </head>
 <body>
 
-<!-- CONSENT OVERLAY -->
-<div class="consent-overlay" id="consentOverlay" style="display:none">
-  <div class="consent-box">
-    <div class="consent-logo">ATOM X</div>
-    <div class="consent-title">Antes de empezar 👋</div>
-    <p class="consent-text">
-      Esta app analiza imágenes de diseños de tatuaje usando inteligencia artificial para recomendarte las tintas Eternal adecuadas.
-      Necesitamos tu consentimiento para algunas funciones. Puedes aceptar todo o elegir qué permites.
-    </p>
-
-    <div class="consent-toggle">
-      <div class="consent-toggle-info">
-        <strong>Funciones esenciales <span class="consent-required-tag">NECESARIO</span></strong>
-        <span>Análisis de imagen, recomendaciones de tintas. Sin esto la app no funciona.</span>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" checked disabled>
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <div class="consent-toggle">
-      <div class="consent-toggle-info">
-        <strong>Guardar historial de análisis</strong>
-        <span>Almacenar tus resultados para consultarlos más adelante.</span>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="consentHistory">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <div class="consent-toggle">
-      <div class="consent-toggle-info">
-        <strong>Notificaciones</strong>
-        <span>Avisos sobre nuevas tintas, ofertas o novedades de ATOM X.</span>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="consentNotifications">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-
-    <p class="consent-text" style="margin-top:20px;font-size:12px">
-      Al continuar aceptas nuestros
-      <a href="/legal/terminos.html" target="_blank">Términos y Condiciones</a>,
-      <a href="/legal/privacidad.html" target="_blank">Política de Privacidad</a> y
-      <a href="/legal/cookies.html" target="_blank">Política de Cookies</a>.
-      Puedes cambiar tus preferencias en cualquier momento desde Ajustes.
-    </p>
-
-    <button class="consent-btn-accept" onclick="acceptConsent()">ACEPTAR Y CONTINUAR</button>
-    <button class="consent-btn-reject" onclick="rejectOptional()">Solo funciones esenciales</button>
+<div class="access-overlay" id="access-overlay">
+  <div class="access-card">
+    <div class="access-kicker">ATOM X DESIGN</div>
+    <div class="access-title">Entra para probar la herramienta</div>
+    <div class="access-text">Pon tu nombre para entrar. Asi vemos quien esta dentro y el feedback se guarda con autor real.</div>
+    <input class="access-input" id="access-name" type="text" maxlength="32" placeholder="Tu nombre">
+    <div class="access-error" id="access-error"></div>
+    <button class="access-btn" type="button" onclick="enterDesign()">Entrar a Design</button>
   </div>
 </div>
+
+<div class="app-shell" id="app-shell">
 
 <!-- HEADER -->
 <div class="header">
@@ -415,13 +1098,21 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
     <div class="logo-text">ATOM X</div>
     <div class="logo-sub">COLOR MATCHER</div>
   </div>
-  <div class="header-badge">⚡ atomxsupply.com</div>
+  <div class="header-actions">
+    <button class="header-tool-btn" id="palette-tool-btn" type="button" onclick="togglePalettePanel()" title="Importar paleta">🎨</button>
+    <div class="header-badge">Design interno</div>
+  </div>
+</div>
+
+<div class="online-strip">
+  <div class="online-list" id="online-list"></div>
+  <div class="session-chip" id="session-chip"></div>
 </div>
 
 <!-- CONTADOR -->
 <div class="counter-wrap">
   <div class="counter-num" id="counter-num">0</div>
-  <div class="counter-label">tatuadores que hemos ayudado con su diseño</div>
+  <div class="counter-label">tatuadores a los que hemos ayudado con su diseno</div>
 </div>
 
 <!-- ATOMX CHARACTER -->
@@ -445,7 +1136,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
       </g>
       <!-- Nucleus -->
       <circle cx="55" cy="55" r="22" fill="#111" stroke="#ff4d00" stroke-width="2"/>
-      <!-- FACE — eyes and mouth change via JS -->
+      <!-- FACE â€” eyes and mouth change via JS -->
       <g id="atomx-face">
         <!-- idle face -->
         <circle id="eye-l" cx="48" cy="51" r="3" fill="#ff4d00"/>
@@ -455,7 +1146,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
     </svg>
   </div>
   <div class="atomx-bubble" id="atomx-bubble">
-    <span class="bubble-text" id="bubble-text">¡Hola rey! ¿Qué diseño quieres enseñarme? 🤙</span>
+    <span class="bubble-text" id="bubble-text">Hola, ensename el diseno y te digo las tintas.</span>
   </div>
 </div>
 
@@ -464,7 +1155,7 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
 
   <!-- SELECTOR TONO DE PIEL -->
   <div class="skin-selector">
-    <span class="skin-label">TONO DE PIEL DEL CLIENTE — elige antes de subir el diseño</span>
+    <span class="skin-label">TONO DE PIEL DEL CLIENTE - elige antes de subir el diseno</span>
     <div class="skin-options">
       <button class="skin-btn active" data-skin="1" onclick="selectSkin(this)">
         <div class="skin-circle" style="background:#FDDBB4"></div>
@@ -487,31 +1178,101 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
         <div class="skin-name">MUY OSCURA</div>
       </button>
     </div>
-    <div class="skin-lock-hint" id="skin-lock-hint">🔒 Selección bloqueada — reinicia para cambiar</div>
+    <div class="skin-lock-hint" id="skin-lock-hint">Seleccion bloqueada - reinicia para cambiar</div>
+  </div>
+  
+  <div class="palette-card">
+    <div class="palette-head" onclick="togglePalettePanel()">
+      <div>
+        <div class="palette-kicker">Paleta / Procreate</div>
+        <div class="palette-title">Importa una imagen de paleta o marca un color manual</div>
+      </div>
+      <button class="feedback-toggle" id="palette-toggle" type="button">+</button>
+    </div>
+    <div class="palette-body" id="palette-body">
+      <div class="palette-text">Fase 1: subes una captura de paleta o tocas el color manual y ATOM X te deja los tonos detectados listos. Luego esto lo conectaremos con la tinta exacta.</div>
+      <div class="palette-actions">
+        <button class="palette-upload-btn" type="button" onclick="document.getElementById('palette-file-input').click()">Importar paleta</button>
+        <input class="palette-color-input" id="palette-color-input" type="color" value="#ff4d00" onchange="setManualPaletteColor(this.value)">
+      </div>
+      <div class="hex-tools">
+        <input class="hex-input" id="palette-hex-input" type="text" placeholder="#ff4d00 o 255,77,0">
+        <button class="palette-upload-btn" type="button" onclick="applyHexColorMatch()">Buscar tinta</button>
+      </div>
+      <input class="palette-file-input" id="palette-file-input" type="file" accept="image/*" onchange="handlePaletteFile(event)">
+      <div class="palette-status" id="palette-status">Sin paleta cargada todavia.</div>
+      <div class="palette-selected" id="palette-selected" style="display:none">
+        <div class="palette-selected-color" id="palette-selected-color"></div>
+        <div class="palette-selected-text" id="palette-selected-text"></div>
+      </div>
+      <div class="palette-grid" id="palette-grid"></div>
+      <div class="hex-match-box" id="hex-match-box" style="display:none"></div>
+      <button class="palette-clear-btn" type="button" onclick="clearPaletteSamples()">Limpiar paleta</button>
+    </div>
+  </div>
+
+  <div class="feedback-card">
+    <div class="feedback-head" onclick="toggleFeedbackPanel()">
+      <div>
+        <div class="feedback-kicker">Feedback tatuador</div>
+        <div class="feedback-title">Dinos rapido que mejorar y donde falla</div>
+      </div>
+      <button class="feedback-toggle" id="feedback-toggle" type="button">+</button>
+    </div>
+    <div class="feedback-body" id="feedback-body">
+      <div class="feedback-empty" id="feedback-empty">
+        Si algo falla, se queda corto o ves una mejor tinta, dilo aqui. Todo esto nos sirve para seguir afinando ATOM X.
+      </div>
+      <textarea
+        class="feedback-input"
+        id="feedback-input"
+        placeholder="Ejemplo: aqui se ha ido demasiado a Eternal, el amarillo tendria que ser mas limpio y esta sombra pide mas transicion..."
+        oninput="updateFeedbackCount()"
+      ></textarea>
+      <div class="feedback-row">
+        <div class="feedback-count" id="feedback-count">0 caracteres · +250 = 5 EUR · +500 = 8 EUR</div>
+        <button class="feedback-send" id="feedback-send" type="button" onclick="submitFeedback()">Enviar feedback</button>
+      </div>
+      <div class="feedback-reward" id="feedback-reward">
+        <div class="feedback-reward-title" id="feedback-reward-title">Has ganado 5 EUR en ATOM X</div>
+        <div style="font-size:12px; color:var(--muted); line-height:1.45" id="feedback-reward-message"></div>
+        <div class="feedback-reward-code">
+          <span id="feedback-reward-code">00000</span>
+          <button class="feedback-reward-copy" type="button" onclick="copyRewardCode()">copiar</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- UPLOAD -->
   <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
     <div id="upload-placeholder">
-      <div class="upload-icon">🖼️</div>
-      <div class="upload-title">Sube el diseño del tatuaje</div>
-      <div class="upload-sub">ATOMX detecta los colores y te dice<br>exactamente qué tintas necesitas</div>
+      <div class="upload-icon">[+]</div>
+      <div class="upload-title">Sube el diseno del tatuaje</div>
+      <div class="upload-sub">ATOM X detecta los colores y te dice<br>exactamente que tintas necesitas</div>
     </div>
-    <img id="preview-img" alt="Diseño">
+    <img id="preview-img" alt="Diseno">
+    <div class="preview-overlay" id="preview-overlay"></div>
     <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+  </div>
+
+  <div class="preview-controls" id="preview-controls">
+    <div class="preview-controls-actions">
+      <button class="preview-reset-btn" type="button" onclick="resetPreviewTransform()">Recentrar imagen</button>
+    </div>
   </div>
 
   <!-- ANALYZE BTN -->
   <button class="analyze-btn" id="analyze-btn" onclick="analyzeImage()">
-    ⚡ QUE ATOMX LO ANALICE
+    ANALIZAR CON ATOM X
   </button>
 
   <!-- LOADING -->
   <div class="loading" id="loading">
     <div class="loading-steps">
-      <div class="loading-step active" id="step1">🔸 Escaneando los colores del diseño...</div>
-      <div class="loading-step" id="step2">🎨 Identificando tintas del catálogo...</div>
-      <div class="loading-step" id="step3">🧪 Calculando comportamiento en piel...</div>
+      <div class="loading-step active" id="step1">Escaneando los colores del diseno...</div>
+      <div class="loading-step" id="step2">Identificando tintas del catalogo...</div>
+      <div class="loading-step" id="step3">Calculando comportamiento en piel...</div>
     </div>
   </div>
 
@@ -525,28 +1286,29 @@ input:disabled + .toggle-slider { opacity:0.5; cursor:not-allowed; }
   <div class="results" id="results"></div>
 
 </div>
+</div>
 
 <script>
-// ── CATÁLOGO REAL ATOM X SUPPLY — ETERNAL INK (solo productos en stock) ──
-const catalogo = {
+// â”€â”€ CATÃLOGO REAL ATOM X SUPPLY â€” ETERNAL INK (solo productos en stock) â”€â”€
+const catalogoLocal = {
   negros: [
-    { nombre:"Eternal Triple Black",    precio:19.51, uso:"Negro intenso líneas y relleno" },
+    { nombre:"Eternal Triple Black",    precio:19.51, uso:"Negro intenso lÃ­neas y relleno" },
     { nombre:"Eternal Perfect Black",   precio:19.51, uso:"Negro perfecto todo uso" },
-    { nombre:"Eternal Maxx Black",      precio:19.51, uso:"Negro máxima densidad" },
-    { nombre:"Eternal Lining Black",    precio:19.51, uso:"Específico para líneas finas" },
+    { nombre:"Eternal Maxx Black",      precio:19.51, uso:"Negro mÃ¡xima densidad" },
+    { nombre:"Eternal Lining Black",    precio:19.51, uso:"EspecÃ­fico para lÃ­neas finas" },
     { nombre:"Eternal Blackbird",       precio:19.51, uso:"Negro suave para sombreado" },
   ],
   grises: [
-    { nombre:"Eternal Cool Light Gray",  precio:19.51, uso:"Gris frío claro sombras suaves" },
-    { nombre:"Eternal Cool Medium Grey", precio:19.51, uso:"Gris frío medio" },
-    { nombre:"Eternal Cool Dark Grey",   precio:19.51, uso:"Gris frío oscuro" },
-    { nombre:"Eternal Warm Light Grey",  precio:19.51, uso:"Gris cálido claro" },
-    { nombre:"Eternal Warm Medium Gray", precio:19.51, uso:"Gris cálido medio" },
-    { nombre:"Eternal Warm Dark Gray",   precio:19.51, uso:"Gris cálido oscuro" },
-    { nombre:"Eternal Gray",             precio:19.51, uso:"Gris estándar" },
+    { nombre:"Eternal Cool Light Gray",  precio:19.51, uso:"Gris frÃ­o claro sombras suaves" },
+    { nombre:"Eternal Cool Medium Grey", precio:19.51, uso:"Gris frÃ­o medio" },
+    { nombre:"Eternal Cool Dark Grey",   precio:19.51, uso:"Gris frÃ­o oscuro" },
+    { nombre:"Eternal Warm Light Grey",  precio:19.51, uso:"Gris cÃ¡lido claro" },
+    { nombre:"Eternal Warm Medium Gray", precio:19.51, uso:"Gris cÃ¡lido medio" },
+    { nombre:"Eternal Warm Dark Gray",   precio:19.51, uso:"Gris cÃ¡lido oscuro" },
+    { nombre:"Eternal Gray",             precio:19.51, uso:"Gris estÃ¡ndar" },
     { nombre:"Eternal Smoke",            precio:20.81, uso:"Gris humo sombreado" },
-    { nombre:"Eternal Bay Gray",         precio:19.51, uso:"Gris neutro versátil" },
-    { nombre:"Eternal Exhaust",          precio:19.51, uso:"Gris violáceo oscuro" },
+    { nombre:"Eternal Bay Gray",         precio:19.51, uso:"Gris neutro versÃ¡til" },
+    { nombre:"Eternal Exhaust",          precio:19.51, uso:"Gris violÃ¡ceo oscuro" },
     { nombre:"Eternal Ink Neutral Gray Set", precio:39.00, uso:"Set grises neutros" },
   ],
   blancos: [
@@ -559,38 +1321,38 @@ const catalogo = {
     { nombre:"Eternal Fair Maiden",      precio:19.51, uso:"Blanco rosado muy suave" },
   ],
   rojos: [
-    { nombre:"Eternal Crimson Red",      precio:19.51, uso:"Rojo clásico brillante" },
-    { nombre:"Eternal Ruby Red",         precio:19.51, uso:"Rojo rubí intenso" },
+    { nombre:"Eternal Crimson Red",      precio:19.51, uso:"Rojo clÃ¡sico brillante" },
+    { nombre:"Eternal Ruby Red",         precio:19.51, uso:"Rojo rubÃ­ intenso" },
     { nombre:"Eternal Vette Red",        precio:19.51, uso:"Rojo vivo muy saturado" },
     { nombre:"Eternal Deep Red",         precio:19.51, uso:"Rojo oscuro profundo" },
     { nombre:"Eternal Dark Red",         precio:19.51, uso:"Rojo oscuro" },
     { nombre:"Eternal Light Red",        precio:19.51, uso:"Rojo claro" },
     { nombre:"Eternal Lipstick Red",     precio:19.51, uso:"Rojo vivo tipo labial" },
-    { nombre:"Eternal Rusty Red",        precio:19.51, uso:"Rojo óxido envejecido" },
+    { nombre:"Eternal Rusty Red",        precio:19.51, uso:"Rojo Ã³xido envejecido" },
     { nombre:"Eternal Undead Red",       precio:19.51, uso:"Rojo sangre oscura" },
     { nombre:"Eternal Dried Blood",      precio:19.51, uso:"Rojo sangre seca muy oscuro" },
-    { nombre:"Eternal Moulin Rouge",     precio:19.51, uso:"Rojo intenso dramático" },
+    { nombre:"Eternal Moulin Rouge",     precio:19.51, uso:"Rojo intenso dramÃ¡tico" },
     { nombre:"Eternal Wine Berry",       precio:19.51, uso:"Burdeos oscuro" },
   ],
   rosas: [
     { nombre:"Eternal Hot Pink",         precio:19.51, uso:"Rosa fucsia intenso" },
     { nombre:"Eternal Vivid Pink",       precio:19.51, uso:"Rosa vivo brillante" },
     { nombre:"Eternal Flamingo Pink",    precio:19.51, uso:"Rosa flamenco suave" },
-    { nombre:"Eternal Pink",             precio:19.51, uso:"Rosa estándar" },
+    { nombre:"Eternal Pink",             precio:19.51, uso:"Rosa estÃ¡ndar" },
     { nombre:"Eternal Pepto Pink",       precio:19.51, uso:"Rosa chicle pastel" },
     { nombre:"Eternal Light Magenta",    precio:19.51, uso:"Magenta claro" },
     { nombre:"Eternal Magenta",          precio:19.51, uso:"Magenta puro" },
     { nombre:"Eternal Fuchsia",          precio:19.51, uso:"Fucsia brillante" },
     { nombre:"Eternal Antique Fuchsia",  precio:19.51, uso:"Fucsia antiguo apagado" },
     { nombre:"Eternal Mulberry",         precio:19.51, uso:"Mora oscura" },
-    { nombre:"Eternal Wild Orchid",      precio:19.51, uso:"Orquídea viva" },
+    { nombre:"Eternal Wild Orchid",      precio:19.51, uso:"OrquÃ­dea viva" },
     { nombre:"Eternal Dusty Rose",       precio:19.51, uso:"Rosa envejecido apagado" },
     { nombre:"Eternal Rose Satin",       precio:19.51, uso:"Rosa satinado elegante" },
     { nombre:"Eternal Victorian Rose",   precio:19.51, uso:"Rosa victoriano vintage" },
     { nombre:"Eternal Plush Blush",      precio:19.51, uso:"Rosa empolvado suave" },
-    { nombre:"Eternal Salmon",           precio:19.51, uso:"Salmón rosado natural" },
-    { nombre:"Eternal Red Violet",       precio:19.51, uso:"Rojo violáceo" },
-    { nombre:"Eternal Cotton Candy",     precio:19.51, uso:"Rosa algodón de azúcar" },
+    { nombre:"Eternal Salmon",           precio:19.51, uso:"SalmÃ³n rosado natural" },
+    { nombre:"Eternal Red Violet",       precio:19.51, uso:"Rojo violÃ¡ceo" },
+    { nombre:"Eternal Cotton Candy",     precio:19.51, uso:"Rosa algodÃ³n de azÃºcar" },
   ],
   morados: [
     { nombre:"Eternal Dark Purple",      precio:19.51, uso:"Morado oscuro intenso" },
@@ -605,23 +1367,23 @@ const catalogo = {
     { nombre:"Eternal Orange",           precio:20.81, uso:"Naranja puro brillante" },
     { nombre:"Eternal Bright Orange",    precio:19.51, uso:"Naranja muy vivo" },
     { nombre:"Eternal Burnt Orange",     precio:20.81, uso:"Naranja tostado" },
-    { nombre:"Eternal Rust",             precio:20.81, uso:"Naranja óxido oscuro" },
+    { nombre:"Eternal Rust",             precio:20.81, uso:"Naranja Ã³xido oscuro" },
     { nombre:"Eternal Tangerine",        precio:19.51, uso:"Naranja mandarina suave" },
-    { nombre:"Eternal Papaya",           precio:19.51, uso:"Salmón naranja vivo" },
+    { nombre:"Eternal Papaya",           precio:19.51, uso:"SalmÃ³n naranja vivo" },
   ],
   amarillos: [
     { nombre:"Eternal Bright Yellow",    precio:20.81, uso:"Amarillo puro brillante" },
-    { nombre:"Eternal Lightning Yellow", precio:20.81, uso:"Amarillo neón eléctrico" },
+    { nombre:"Eternal Lightning Yellow", precio:20.81, uso:"Amarillo neÃ³n elÃ©ctrico" },
     { nombre:"Eternal Bumblebee",        precio:20.81, uso:"Amarillo abeja saturado" },
-    { nombre:"Eternal Sunflower",        precio:20.81, uso:"Amarillo girasol cálido" },
+    { nombre:"Eternal Sunflower",        precio:20.81, uso:"Amarillo girasol cÃ¡lido" },
     { nombre:"Eternal Golden Yellow",    precio:20.81, uso:"Amarillo dorado" },
-    { nombre:"Eternal Harvest Gold",     precio:20.81, uso:"Dorado otoñal" },
+    { nombre:"Eternal Harvest Gold",     precio:20.81, uso:"Dorado otoÃ±al" },
     { nombre:"Eternal Old Gold",         precio:19.51, uso:"Dorado envejecido" },
   ],
   verdes: [
-    { nombre:"Eternal Nuclear Green",     precio:20.81, uso:"Verde neón fluorescente" },
+    { nombre:"Eternal Nuclear Green",     precio:20.81, uso:"Verde neÃ³n fluorescente" },
     { nombre:"Eternal Lime Green",        precio:20.81, uso:"Verde lima brillante" },
-    { nombre:"Eternal Shamrock",          precio:20.81, uso:"Verde trébol puro" },
+    { nombre:"Eternal Shamrock",          precio:20.81, uso:"Verde trÃ©bol puro" },
     { nombre:"Eternal Jade",              precio:20.81, uso:"Verde jade medio" },
     { nombre:"Eternal Jungle Green",      precio:20.81, uso:"Verde selva oscuro" },
     { nombre:"Eternal Green Concentrate", precio:20.81, uso:"Verde puro muy saturado" },
@@ -634,7 +1396,7 @@ const catalogo = {
     { nombre:"Eternal Aqua Marine",       precio:20.81, uso:"Verde agua turquesa" },
     { nombre:"Eternal Sea Foam",          precio:19.51, uso:"Verde espuma de mar" },
     { nombre:"Eternal Granny Smith Green",precio:19.51, uso:"Verde manzana claro" },
-    { nombre:"Eternal Roadrunner Green",  precio:20.81, uso:"Verde neón eléctrico" },
+    { nombre:"Eternal Roadrunner Green",  precio:20.81, uso:"Verde neÃ³n elÃ©ctrico" },
     { nombre:"Eternal Honey Dew",         precio:20.81, uso:"Verde claro pastel" },
     { nombre:"Eternal Graffiti Green",    precio:20.81, uso:"Verde urbano vibrante" },
     { nombre:"Eternal Coral Green",       precio:19.51, uso:"Verde coral suave" },
@@ -642,14 +1404,14 @@ const catalogo = {
     { nombre:"Eternal Green Slime",       precio:20.81, uso:"Verde slime fluorescente" },
   ],
   azules: [
-    { nombre:"Eternal True Blue",         precio:20.81, uso:"Azul puro estándar" },
+    { nombre:"Eternal True Blue",         precio:20.81, uso:"Azul puro estÃ¡ndar" },
     { nombre:"Eternal Dark Cobalt",       precio:20.81, uso:"Azul cobalto oscuro" },
     { nombre:"Eternal Galaxy Blue",       precio:20.81, uso:"Azul muy oscuro profundo" },
     { nombre:"Eternal Blue Concentrate",  precio:20.81, uso:"Azul saturado puro" },
     { nombre:"Eternal Peacock Blue",      precio:20.81, uso:"Azul pavo real medio" },
     { nombre:"Eternal Deep Sea",          precio:20.81, uso:"Azul mar profundo" },
     { nombre:"Eternal Sky Blue",          precio:20.81, uso:"Azul cielo brillante" },
-    { nombre:"Eternal Baby Blue",         precio:20.81, uso:"Azul bebé suave" },
+    { nombre:"Eternal Baby Blue",         precio:20.81, uso:"Azul bebÃ© suave" },
     { nombre:"Eternal Bermuda Blue",      precio:20.81, uso:"Azul caribe tropical" },
     { nombre:"Eternal Slate Blue",        precio:19.51, uso:"Azul pizarra apagado" },
     { nombre:"Eternal Dusty Blue",        precio:20.81, uso:"Azul polvoriento suave" },
@@ -658,87 +1420,96 @@ const catalogo = {
     { nombre:"Eternal Turquoise",         precio:20.81, uso:"Turquesa brillante" },
     { nombre:"Eternal Tropical Teal",     precio:20.81, uso:"Verde azulado tropical" },
     { nombre:"Eternal GTO Teal",          precio:20.81, uso:"Verde azulado intenso" },
-    { nombre:"Eternal Frostbite Blue",    precio:20.81, uso:"Azul hielo muy frío" },
+    { nombre:"Eternal Frostbite Blue",    precio:20.81, uso:"Azul hielo muy frÃ­o" },
   ],
   pieles: [
     { nombre:"Eternal Rich Medium Flesh", precio:19.51, uso:"Piel media para retratos" },
     { nombre:"Eternal Rich Dark Flesh",   precio:19.51, uso:"Piel oscura para retratos" },
-    { nombre:"Eternal Georgia Peach",     precio:20.81, uso:"Piel clara melocotón" },
+    { nombre:"Eternal Georgia Peach",     precio:20.81, uso:"Piel clara melocotÃ³n" },
     { nombre:"Eternal Light Peach",       precio:20.81, uso:"Piel muy clara" },
-    { nombre:"Eternal Peachy Flesh",      precio:20.81, uso:"Piel rosácea natural" },
+    { nombre:"Eternal Peachy Flesh",      precio:20.81, uso:"Piel rosÃ¡cea natural" },
     { nombre:"Eternal Nude Blush",        precio:19.51, uso:"Piel nude rosada" },
-    { nombre:"Eternal Sea Shell",         precio:19.51, uso:"Piel muy pálida" },
+    { nombre:"Eternal Sea Shell",         precio:19.51, uso:"Piel muy pÃ¡lida" },
     { nombre:"Eternal Almond",            precio:20.81, uso:"Piel almendra media" },
     { nombre:"Eternal Spice",             precio:19.51, uso:"Piel especiada oscura" },
-    { nombre:"Eternal Andrea Afferni Light Chestnut", precio:19.51, uso:"Castaño claro retratos" },
+    { nombre:"Eternal Andrea Afferni Light Chestnut", precio:19.51, uso:"CastaÃ±o claro retratos" },
     { nombre:"Eternal Bright Fawn",       precio:19.51, uso:"Beige claro natural" },
-    { nombre:"Eternal Sandy Beige",       precio:19.51, uso:"Beige arena cálido" },
+    { nombre:"Eternal Sandy Beige",       precio:19.51, uso:"Beige arena cÃ¡lido" },
   ],
   marrones: [
-    { nombre:"Eternal Dark Brown",        precio:19.51, uso:"Marrón oscuro estándar" },
-    { nombre:"Eternal Hot Chocolate",     precio:19.51, uso:"Marrón chocolate cálido" },
-    { nombre:"Eternal Mocha",             precio:20.81, uso:"Marrón moca suave" },
-    { nombre:"Eternal Caramel",           precio:19.51, uso:"Marrón caramelo dorado" },
-    { nombre:"Eternal Brown",             precio:19.51, uso:"Marrón básico natural" },
-    { nombre:"Eternal Cocoa Bean",        precio:19.51, uso:"Marrón cacao oscuro" },
-    { nombre:"Eternal Rich Espresso",     precio:20.81, uso:"Marrón expreso muy oscuro" },
-    { nombre:"Eternal Sable",             precio:20.81, uso:"Marrón casi negro" },
+    { nombre:"Eternal Dark Brown",        precio:19.51, uso:"MarrÃ³n oscuro estÃ¡ndar" },
+    { nombre:"Eternal Hot Chocolate",     precio:19.51, uso:"MarrÃ³n chocolate cÃ¡lido" },
+    { nombre:"Eternal Mocha",             precio:20.81, uso:"MarrÃ³n moca suave" },
+    { nombre:"Eternal Caramel",           precio:19.51, uso:"MarrÃ³n caramelo dorado" },
+    { nombre:"Eternal Brown",             precio:19.51, uso:"MarrÃ³n bÃ¡sico natural" },
+    { nombre:"Eternal Cocoa Bean",        precio:19.51, uso:"MarrÃ³n cacao oscuro" },
+    { nombre:"Eternal Rich Espresso",     precio:20.81, uso:"MarrÃ³n expreso muy oscuro" },
+    { nombre:"Eternal Sable",             precio:20.81, uso:"MarrÃ³n casi negro" },
     { nombre:"Eternal Ochre",             precio:20.81, uso:"Ocre amarillento" },
     { nombre:"Eternal Dark Ochre",        precio:20.81, uso:"Ocre oscuro tierroso" },
-    { nombre:"Eternal Mudslide",          precio:19.51, uso:"Marrón barro grisáceo" },
-    { nombre:"Eternal Longhorn Brown",    precio:20.81, uso:"Marrón cuero cálido" },
-    { nombre:"Eternal Mudflap Brown",     precio:20.81, uso:"Marrón oscuro apagado" },
-    { nombre:"Eternal Plague Brown",      precio:20.81, uso:"Marrón apagado oscuro" },
-    { nombre:"Eternal Putrid Brown",      precio:19.51, uso:"Marrón desaturado sucio" },
-    { nombre:"Eternal Whiskey Barrel",    precio:19.51, uso:"Marrón whiskey cálido" },
+    { nombre:"Eternal Mudslide",          precio:19.51, uso:"MarrÃ³n barro grisÃ¡ceo" },
+    { nombre:"Eternal Longhorn Brown",    precio:20.81, uso:"MarrÃ³n cuero cÃ¡lido" },
+    { nombre:"Eternal Mudflap Brown",     precio:20.81, uso:"MarrÃ³n oscuro apagado" },
+    { nombre:"Eternal Plague Brown",      precio:20.81, uso:"MarrÃ³n apagado oscuro" },
+    { nombre:"Eternal Putrid Brown",      precio:19.51, uso:"MarrÃ³n desaturado sucio" },
+    { nombre:"Eternal Whiskey Barrel",    precio:19.51, uso:"MarrÃ³n whiskey cÃ¡lido" },
   ],
   especiales: [
     { nombre:"Eternal Bondo",             precio:19.51, uso:"Gris medio transiciones" },
-    { nombre:"Eternal Cold Steel",        precio:19.51, uso:"Gris acero frío" },
-    { nombre:"Eternal Rigor Mortis",      precio:19.51, uso:"Gris azulado cadavérico" },
-    { nombre:"Eternal Freshly Dead",      precio:19.51, uso:"Verde grisáceo zombi fresco" },
+    { nombre:"Eternal Cold Steel",        precio:19.51, uso:"Gris acero frÃ­o" },
+    { nombre:"Eternal Rigor Mortis",      precio:19.51, uso:"Gris azulado cadavÃ©rico" },
+    { nombre:"Eternal Freshly Dead",      precio:19.51, uso:"Verde grisÃ¡ceo zombi fresco" },
     { nombre:"Eternal Gangrene",          precio:19.51, uso:"Verde oscuro gangrenoso" },
-    { nombre:"Eternal Graveside Dark",    precio:20.81, uso:"Morado grisáceo oscuro" },
-    { nombre:"Eternal Graveside Light",   precio:19.51, uso:"Lila grisáceo claro" },
-    { nombre:"Eternal Infected Skin",     precio:19.51, uso:"Verde marrón enfermizo" },
-    { nombre:"Eternal Decomposed Skin",   precio:19.51, uso:"Marrón verdoso zombie" },
+    { nombre:"Eternal Graveside Dark",    precio:20.81, uso:"Morado grisÃ¡ceo oscuro" },
+    { nombre:"Eternal Graveside Light",   precio:19.51, uso:"Lila grisÃ¡ceo claro" },
+    { nombre:"Eternal Infected Skin",     precio:19.51, uso:"Verde marrÃ³n enfermizo" },
+    { nombre:"Eternal Decomposed Skin",   precio:19.51, uso:"MarrÃ³n verdoso zombie" },
   ],
 };
 
-// ── CONTADOR ───────────────────────────────────────────────────────────
-// ── CONSENTIMIENTO ─────────────────────────────────────────────────────
-function initConsent() {
-  const consent = localStorage.getItem('atomx_consent');
-  if (!consent) {
-    document.getElementById('consentOverlay').style.display = 'flex';
+let catalogo = JSON.parse(JSON.stringify(catalogoLocal));
+let catalogoEstado = {
+  modo: 'fallback',
+  live: false,
+  total: Object.values(catalogoLocal).reduce((sum, items) => sum + items.length, 0),
+};
+
+// Preferencias de marca (Design)
+const brandInfo = {
+  MIXTO: { label: 'ATOM X MIXTO', hint: 'ATOM X mezcla Eternal, Vice Colors y Radiant segun el color, el estilo, la piel y el uso tecnico real.' },
+};
+
+let selectedBrandMode = 'MIXTO';
+let brandChangeTimer = null;
+let isAnalyzing = false;
+let lastAnalysis = null;
+
+const brandCatalogMeta = {
+  MIXTO: { label: 'ATOM X MIXTO', categoryUrl: 'https://www.atomxsupply.com/' },
+};
+
+function setBrandUI() {
+  const hint = document.getElementById('brand-hint');
+  if (hint) {
+    const baseHint = brandInfo[selectedBrandMode]?.hint || brandInfo.MIXTO.hint;
+    const count = countBrandItems(selectedBrandMode);
+    const shopUrl = brandCatalogMeta[selectedBrandMode]?.categoryUrl || '';
+    hint.innerHTML = count === 0
+      ? `${baseHint}${shopUrl ? ` <a href="${shopUrl}" target="_blank" rel="noopener">Ver tienda</a>` : ''}`
+      : `${baseHint}${shopUrl ? ` <a href="${shopUrl}" target="_blank" rel="noopener">Ver categoria</a>` : ''}`;
   }
 }
 
-function acceptConsent() {
-  const history = document.getElementById('consentHistory').checked;
-  const notifications = document.getElementById('consentNotifications').checked;
-  localStorage.setItem('atomx_consent', JSON.stringify({
-    version: '1.0',
-    date: new Date().toISOString(),
-    essential: true,
-    history,
-    notifications
-  }));
-  document.getElementById('consentOverlay').style.display = 'none';
+function onBrandChange(value) {
+  selectedBrandMode = 'MIXTO';
+  setBrandUI();
+  if (imageBase64 && !isAnalyzing) {
+    if (brandChangeTimer) clearTimeout(brandChangeTimer);
+    brandChangeTimer = setTimeout(() => {
+      analyzeImage();
+    }, 180);
+  }
 }
-
-function rejectOptional() {
-  localStorage.setItem('atomx_consent', JSON.stringify({
-    version: '1.0',
-    date: new Date().toISOString(),
-    essential: true,
-    history: false,
-    notifications: false
-  }));
-  document.getElementById('consentOverlay').style.display = 'none';
-}
-
-initConsent();
 
 function initCounter() {
   const n = parseInt(localStorage.getItem('atomx_count') || '0');
@@ -753,14 +1524,605 @@ function incrementCounter() {
   setTimeout(() => el.style.transform = 'scale(1)', 300);
 }
 initCounter();
+setBrandUI();
 
-// ── MENSAJES DE ATOMX ──────────────────────────────────────────────────
+function getPresenceEndpoint() {
+  return '/api/presence';
+}
+
+function getSessionUser() {
+  try {
+    const raw = localStorage.getItem('atomx_design_session');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setSessionUser(name) {
+  localStorage.setItem('atomx_design_session', JSON.stringify({ name, at: Date.now() }));
+}
+
+function renderPresence(items = []) {
+  const wrap = document.getElementById('online-list');
+  const chip = document.getElementById('session-chip');
+  const me = getSessionUser();
+  if (chip) chip.textContent = me?.name ? `Dentro: ${me.name}` : '';
+  if (!wrap) return;
+  if (!items.length) {
+    wrap.innerHTML = '<span class="online-pill"><span class="online-dot"></span>solo tu por ahora</span>';
+    return;
+  }
+  wrap.innerHTML = items.slice(0, 6).map((item) => `
+    <span class="online-pill"><span class="online-dot"></span>${String(item.name || 'alguien').replace(/</g, '&lt;')}</span>
+  `).join('');
+}
+
+async function sendPresenceHeartbeat() {
+  const me = getSessionUser();
+  if (!me?.name) return;
+  try {
+    await fetch(getPresenceEndpoint(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: me.name }),
+    });
+    const response = await fetch(`${getPresenceEndpoint()}?t=${Date.now()}`);
+    const data = await response.json();
+    renderPresence(data.items || []);
+  } catch (error) {
+    console.warn('No he podido actualizar presencia:', error.message);
+  }
+}
+
+function startPresenceLoop() {
+  sendPresenceHeartbeat();
+  if (!window.__atomxPresenceLoop) {
+    window.__atomxPresenceLoop = window.setInterval(sendPresenceHeartbeat, 30000);
+  }
+}
+
+function bootAccess() {
+  const overlay = document.getElementById('access-overlay');
+  const shell = document.getElementById('app-shell');
+  const me = getSessionUser();
+  if (me?.name) {
+    overlay?.classList.remove('show');
+    shell?.classList.remove('locked');
+    startPresenceLoop();
+    return;
+  }
+  overlay?.classList.add('show');
+  shell?.classList.add('locked');
+}
+
+function enterDesign() {
+  const nameInput = document.getElementById('access-name');
+  const error = document.getElementById('access-error');
+  const name = String(nameInput?.value || '').trim().slice(0, 32);
+  if (!name) {
+    if (error) error.textContent = 'Pon tu nombre para entrar.';
+    return;
+  }
+  setSessionUser(name);
+  if (error) error.textContent = '';
+  document.getElementById('access-overlay')?.classList.remove('show');
+  document.getElementById('app-shell')?.classList.remove('locked');
+  startPresenceLoop();
+}
+
+function normalizeText(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function flattenCatalog(source = catalogo) {
+  return Object.entries(source).flatMap(([categoria, items]) =>
+    (items || []).map((item) => ({
+      ...item,
+      categoria,
+      marca: (item && item.marca) ? String(item.marca) : 'ETERNAL',
+    }))
+  );
+}
+
+function countBrandItems(mode = selectedBrandMode) {
+  if (mode === 'MIXTO') return flattenCatalog().length;
+  return flattenCatalog().filter((item) => shouldRespectSelectedBrand(item.categoria) && brandAccepts(item.marca, mode)).length;
+}
+
+function findCatalogItem(nombreTinta) {
+  const target = normalizeText(nombreTinta);
+  if (!target) return null;
+
+  const items = flattenCatalog();
+  const exact = items.find((item) => normalizeText(item.nombre) === target);
+  if (exact) return exact;
+
+  const relaxed = target.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, '');
+  return items.find((item) => {
+    const current = normalizeText(item.nombre);
+    return current.includes(relaxed) || relaxed.includes(current.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, ''));
+  }) || null;
+}
+
+function findCatalogItemBySku(rawSku, mode = 'MIXTO') {
+  const sku = normalizeText(rawSku).replace(/\s+/g, '');
+  if (!sku) return null;
+  const items = flattenCatalog().filter((item) => {
+    if (!brandAccepts(item.marca, mode)) return false;
+    const ref = normalizeText(item.referencia || '').replace(/\s+/g, '');
+    return ref === sku;
+  });
+  return items[0] || null;
+}
+
+function brandAccepts(marca = '', mode = selectedBrandMode) {
+  const m = String(marca || 'ETERNAL').toUpperCase();
+  const modeUpper = String(mode || 'MIXTO').toUpperCase();
+  if (modeUpper === 'MIXTO') return true;
+  if (modeUpper === 'VICE') return m === 'VICE' || m === 'VICE_COLORS';
+  return m === modeUpper;
+}
+
+function shouldRespectSelectedBrand(categoria = '') {
+  const cat = String(categoria || '').toLowerCase();
+  return cat === 'color';
+}
+
+function promptBrandAccepts(item, mode = selectedBrandMode) {
+  if (!item) return false;
+  if (!shouldRespectSelectedBrand(item.categoria)) {
+    return ['DYNAMIC', 'ALLEGORY', 'HYPE_INK', 'VICE_COLORS', 'VICE', 'RADIANT', 'ETERNAL'].includes(String(item.marca || '').toUpperCase());
+  }
+  return brandAccepts(item.marca, mode);
+}
+
+function listBrandsForCategory(categoria = '') {
+  const cat = String(categoria || '').toLowerCase();
+  const items = flattenCatalog();
+  const set = new Set();
+  items.forEach((item) => {
+    if (!item) return;
+    if (cat && String(item.categoria || '').toLowerCase() !== cat) return;
+    set.add(String(item.marca || 'ETERNAL').toUpperCase());
+  });
+
+  const priority = ['RADIANT', 'DERMAGLO', 'VICE_COLORS', 'VICE', 'ETERNAL', 'DYNAMIC', 'ALLEGORY', 'HYPE_INK'];
+  const ordered = [...set].sort((a, b) => {
+    const ia = priority.indexOf(a);
+    const ib = priority.indexOf(b);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib) || a.localeCompare(b);
+  });
+
+  return ordered;
+}
+
+function findCatalogItemWithBrand(nombreTinta, mode = selectedBrandMode, categoriaEsperada = '') {
+  const target = normalizeText(nombreTinta);
+  if (!target) return null;
+
+  const items = flattenCatalog().filter((item) => brandAccepts(item.marca, mode));
+  const exact = items.find((item) => normalizeText(item.nombre) === target);
+  if (exact) return exact;
+
+  const relaxed = target.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, '');
+  const categoria = String(categoriaEsperada || '').toLowerCase();
+  return items
+    .map((item) => {
+      const current = normalizeText(item.nombre);
+      const currentRelaxed = current.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, '');
+      const exactRelaxed = currentRelaxed === relaxed;
+      const partial = current.includes(relaxed) || relaxed.includes(currentRelaxed);
+      const score =
+        (exactRelaxed ? 12 : 0) +
+        (partial ? 6 : 0) +
+        (categoria && String(item.categoria || '').toLowerCase() === categoria ? 4 : 0) +
+        (item.stock == null ? 0 : item.stock > 0 ? 2 : -1);
+      return { item, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || String(a.item.nombre || '').localeCompare(String(b.item.nombre || '')))[0]?.item || null;
+}
+
+function updateCatalogBadge() {
+  const badge = document.querySelector('.header-badge');
+  if (!badge) return;
+  badge.textContent = catalogoEstado.live
+    ? `Catalogo live · ${catalogoEstado.total}`
+    : `Modo fallback · ${catalogoEstado.total}`;
+}
+
+function getOpsBaseUrl() {
+  const { protocol, hostname, port } = window.location;
+  const isIpHost = /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname);
+  if (isIpHost && port === '3002') {
+    return `${protocol}//${hostname}:3001/api/public`;
+  }
+  return '';
+}
+
+function getCatalogEndpoint() {
+  const base = getOpsBaseUrl();
+  return base ? `${base}/design/tintas` : '/api/catalog';
+}
+
+function getAnalyzeEndpoint() {
+  const base = getOpsBaseUrl();
+  return base ? `${base}/design/analyze` : '/api/analyze';
+}
+
+function getFeedbackEndpoint() {
+  const base = getOpsBaseUrl();
+  return base ? `${base}/design/feedback` : '/api/feedback';
+}
+
+function applyRemoteCatalog(payload) {
+  if (!payload?.categories?.length) return false;
+
+  const next = {};
+  payload.categories.forEach((group) => {
+    next[group.categoria] = (group.items || []).map((item) => ({
+      nombre: item.nombre,
+      precio: Number(item.precio || 0),
+      uso: item.uso || '',
+      stock: item.stock ?? null,
+      activo: typeof item.activo === 'boolean' ? item.activo : true,
+      referencia: item.referencia || '',
+      link: item.link || 'https://atomxsupply.com',
+      marca: item.marca || 'OTRA',
+      source: item.source || 'ops',
+    }));
+  });
+
+  catalogo = next;
+  catalogoEstado = {
+    modo: 'ops',
+    live: !!payload?.sources?.prestashop_live,
+    total: Number(payload.total || flattenCatalog(next).length || 0),
+  };
+  updateCatalogBadge();
+  setBrandUI();
+  return true;
+}
+
+async function loadCatalogoRemoto() {
+  updateCatalogBadge();
+
+  try {
+    const response = await fetch(getCatalogEndpoint());
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    if (!applyRemoteCatalog(payload)) throw new Error('Payload sin categorias');
+  } catch (error) {
+    console.warn('Catalogo remoto no disponible, sigo con fallback local:', error.message);
+    catalogo = JSON.parse(JSON.stringify(catalogoLocal));
+    catalogoEstado = {
+      modo: 'fallback',
+      live: false,
+      total: flattenCatalog(catalogoLocal).length,
+    };
+    updateCatalogBadge();
+    setBrandUI();
+  }
+}
+
+loadCatalogoRemoto();
+
+function toggleFeedbackPanel(forceValue = null) {
+  feedbackOpen = typeof forceValue === 'boolean' ? forceValue : !feedbackOpen;
+  const body = document.getElementById('feedback-body');
+  const toggle = document.getElementById('feedback-toggle');
+  if (body) body.classList.toggle('open', feedbackOpen);
+  if (toggle) toggle.textContent = feedbackOpen ? '−' : '+';
+}
+
+function updateFeedbackCount() {
+  const value = String(document.getElementById('feedback-input')?.value || '');
+  const countEl = document.getElementById('feedback-count');
+  const sendBtn = document.getElementById('feedback-send');
+  if (countEl) {
+    let rewardText = '+250 = 5 EUR · +500 = 8 EUR';
+    if (value.length >= 500) rewardText = 'listo: te llevas 8 EUR';
+    else if (value.length >= 250) rewardText = 'listo: te llevas 5 EUR';
+    countEl.textContent = `${value.length} caracteres · ${rewardText}`;
+  }
+  if (sendBtn) sendBtn.disabled = value.trim().length < 8;
+}
+
+function togglePalettePanel(forceValue = null) {
+  paletteOpen = typeof forceValue === 'boolean' ? forceValue : !paletteOpen;
+  const body = document.getElementById('palette-body');
+  const toggle = document.getElementById('palette-toggle');
+  const tool = document.getElementById('palette-tool-btn');
+  if (body) body.classList.toggle('open', paletteOpen);
+  if (toggle) toggle.textContent = paletteOpen ? '−' : '+';
+  if (tool) tool.classList.toggle('active', paletteOpen);
+}
+
+function renderPaletteSelected() {
+  const box = document.getElementById('palette-selected');
+  const colorEl = document.getElementById('palette-selected-color');
+  const textEl = document.getElementById('palette-selected-text');
+  if (!box || !colorEl || !textEl) return;
+  if (!selectedPaletteHex) {
+    box.style.display = 'none';
+    return;
+  }
+  const selected = paletteSamples.find((item) => item.hex === selectedPaletteHex) || { hex: selectedPaletteHex, name: selectedPaletteHex, source: 'manual' };
+  colorEl.style.background = selected.hex;
+  textEl.innerHTML = `<strong style="color:var(--text)">${selected.name || selected.hex}</strong><br><span>${selected.hex} · ${selected.source === 'manual' ? 'manual' : 'imagen paleta'}</span>`;
+  box.style.display = 'flex';
+}
+
+function renderPaletteSamples() {
+  const grid = document.getElementById('palette-grid');
+  const status = document.getElementById('palette-status');
+  if (!grid || !status) return;
+  if (!paletteSamples.length) {
+    grid.innerHTML = '';
+    status.textContent = 'Sin paleta cargada todavia.';
+    renderPaletteSelected();
+    return;
+  }
+  status.textContent = `${paletteSamples.length} colores listos. Toca uno para dejarlo marcado.`;
+  grid.innerHTML = paletteSamples.map((item, index) => `
+    <button class="palette-swatch ${selectedPaletteHex === item.hex ? 'active' : ''}" type="button" onclick="selectPaletteColor('${item.hex}', ${index})">
+      <div class="palette-swatch-color" style="background:${item.hex}"></div>
+      <div class="palette-swatch-name">${String(item.name || 'Color').replace(/</g, '&lt;')}</div>
+      <div class="palette-swatch-meta">${item.hex}</div>
+    </button>
+  `).join('');
+  renderPaletteSelected();
+}
+
+function parseColorInputToHex(value = '') {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const hex = raw.match(/^#?([0-9a-f]{6})$/i);
+  if (hex) return `#${hex[1].toLowerCase()}`;
+  const rgb = raw.match(/^\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*$/);
+  if (!rgb) return '';
+  const r = Math.max(0, Math.min(255, Number(rgb[1])));
+  const g = Math.max(0, Math.min(255, Number(rgb[2])));
+  const b = Math.max(0, Math.min(255, Number(rgb[3])));
+  return `#${[r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function getNearestInkMatchesByHex(hex = '') {
+  const clean = parseColorInputToHex(hex);
+  if (!clean) return [];
+  const rgb = clean.match(/[0-9a-f]{2}/gi)?.map((v) => parseInt(v, 16)) || [128, 128, 128];
+  const hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+  const targetCategory = hsl.l <= 0.18 ? 'negra' : hsl.l >= 0.82 && hsl.s <= 0.22 ? 'blanca' : 'color';
+  return flattenCatalog()
+    .filter((item) => String(item?.categoria || '').toLowerCase() === targetCategory)
+    .map((item) => ({
+      item,
+      distance: hexDistance(clean, item?.hex || item?.hex_objetivo || ''),
+    }))
+    .filter((entry) => Number.isFinite(entry.distance))
+    .sort((a, b) => a.distance - b.distance || String(a.item?.nombre || '').localeCompare(String(b.item?.nombre || '')))
+    .slice(0, 3);
+}
+
+function renderHexMatches(hex = '') {
+  const box = document.getElementById('hex-match-box');
+  if (!box) return;
+  const clean = parseColorInputToHex(hex);
+  if (!clean) {
+    box.style.display = 'none';
+    box.innerHTML = '';
+    currentHexMatches = [];
+    return;
+  }
+  const matches = getNearestInkMatchesByHex(clean);
+  currentHexMatches = matches.map(({ item }, index) => ({
+    key: `hex-${makeInkSelectionKey(item, `${clean}-${index}`)}`,
+    name: item?.nombre || 'Tinta',
+    brand: formatMarca(item?.marca || ''),
+    sku: item?.referencia || '',
+    price: Number(item?.precio || 0),
+    link: item?.link || '',
+    cartLink: item?.cartLink || '',
+    colorBase: clean.toUpperCase(),
+    category: item?.categoria || '',
+  }));
+  const skin = skinInfo[selectedSkin];
+  box.style.display = 'flex';
+  if (!matches.length) {
+    box.innerHTML = `<div class="hex-match-card"><div class="hex-match-title">No he encontrado equivalencia clara</div><div class="hex-match-meta">Prueba con otro codigo o sube la paleta para cruzarlo mejor.</div></div>`;
+    return;
+  }
+  box.innerHTML = matches.map(({ item, distance }, index) => {
+    const payload = currentHexMatches[index];
+    const isSelected = payload && selectedInkChoices.has(payload.key);
+    const warning = selectedSkin >= 4 && String(item?.categoria || '').toLowerCase() === 'color' && /yellow|amarillo|light|pastel|white/i.test(String(item?.nombre || ''))
+      ? `En piel ${skin.nombre.toLowerCase()} este tono puede perder fuerza.`
+      : '';
+    return `
+      <div class="hex-match-card ${isSelected ? 'selected' : ''}" onclick="toggleHexMatch(${index})">
+        <div class="hex-match-title">Opcion ${index + 1}: ${escapeHtml(item?.nombre || 'Tinta')}</div>
+        <div class="hex-match-meta">${escapeHtml(formatMarca(item?.marca || ''))}${item?.referencia ? ` / SKU ${escapeHtml(item.referencia)}` : ''} · color pedido ${clean.toUpperCase()} · distancia ${distance.toFixed(1)}</div>
+        <div class="hex-match-meta" style="color:${isSelected ? 'var(--accent)' : 'var(--muted)'}">${isSelected ? 'Seleccionada para exportacion' : 'Toca la tarjeta para anadirla a tu seleccion'}</div>
+        ${warning ? `<div class="hex-match-meta" style="color:#ffd600">${escapeHtml(warning)}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function toggleHexMatch(index) {
+  const payload = currentHexMatches[index];
+  if (!payload) return;
+  if (selectedInkChoices.has(payload.key)) {
+    selectedInkChoices.delete(payload.key);
+  } else {
+    selectedInkChoices.set(payload.key, payload);
+  }
+  renderHexMatches(selectedPaletteHex || document.getElementById('palette-hex-input')?.value || '');
+  updateSelectionSummary();
+}
+
+function applyHexColorMatch() {
+  const input = document.getElementById('palette-hex-input');
+  const clean = parseColorInputToHex(input?.value || '');
+  if (!clean) {
+    alert('Pon un HEX valido tipo #ff4d00 o un RGB tipo 255,77,0.');
+    return;
+  }
+  if (input) input.value = clean;
+  setManualPaletteColor(clean);
+  renderHexMatches(clean);
+}
+
+function selectPaletteColor(hex, index = -1) {
+  selectedPaletteHex = hex;
+  renderPaletteSamples();
+  renderHexMatches(hex);
+  const sample = paletteSamples[index] || paletteSamples.find((item) => item.hex === hex);
+  const bubble = document.getElementById('bubble-text');
+  if (bubble && sample) {
+    bubble.textContent = `Color marcado: ${sample.name || sample.hex}. Ya te saco equivalencias reales en tinta.`;
+  }
+}
+
+function clearPaletteSamples() {
+  paletteSamples = [];
+  selectedPaletteHex = '';
+  renderHexMatches('');
+  const input = document.getElementById('palette-file-input');
+  if (input) input.value = '';
+  renderPaletteSamples();
+}
+
+function setManualPaletteColor(value) {
+  const hex = String(value || '').trim();
+  if (!hex) return;
+  const existing = paletteSamples.find((item) => item.hex.toLowerCase() === hex.toLowerCase());
+  if (!existing) {
+    paletteSamples.unshift({
+      hex,
+      name: 'Color manual',
+      source: 'manual',
+    });
+    paletteSamples = paletteSamples.slice(0, 12);
+  }
+  selectedPaletteHex = hex;
+  togglePalettePanel(true);
+  renderPaletteSamples();
+  renderHexMatches(hex);
+}
+
+function handlePaletteFile(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = createAnalysisCanvas(img);
+      const colors = getDominantColors(canvas, 10);
+      paletteSamples = colors.map((color, index) => ({
+        hex: color.hex,
+        name: color.nombre || `Color ${index + 1}`,
+        source: 'imagen',
+      }));
+      selectedPaletteHex = paletteSamples[0]?.hex || '';
+      togglePalettePanel(true);
+      renderPaletteSamples();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showFeedbackReward(reward) {
+  const box = document.getElementById('feedback-reward');
+  const title = document.getElementById('feedback-reward-title');
+  const message = document.getElementById('feedback-reward-message');
+  const code = document.getElementById('feedback-reward-code');
+  if (!box || !title || !message || !code) return;
+
+  if (!reward?.earned) {
+    box.classList.remove('show');
+    return;
+  }
+
+  title.textContent = `Has ganado ${reward.amount || 0} EUR en ATOM X`;
+  message.textContent = reward.message || 'Guardado. Haz una captura y mandasela a Juanfran.';
+  code.textContent = reward.code || '00000';
+  box.classList.add('show');
+}
+
+async function submitFeedback() {
+  const input = document.getElementById('feedback-input');
+  const sendBtn = document.getElementById('feedback-send');
+  const rewardBox = document.getElementById('feedback-reward');
+  const feedback = String(input?.value || '').trim();
+  if (feedback.length < 8) return;
+
+  if (sendBtn) {
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Guardando...';
+  }
+  if (rewardBox) rewardBox.classList.remove('show');
+
+  try {
+    const response = await fetch(getFeedbackEndpoint(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        autor: getSessionUser()?.name || 'tatuador',
+        feedback,
+        selectedBrand: brandInfo[selectedBrandMode]?.label || selectedBrandMode,
+        skinTone: skinInfo[selectedSkin]?.nombre || '',
+        analysis: lastAnalysis || {
+          estilo: '',
+          descripcion_estilo: '',
+          colores_detectados: extractedColors || [],
+          tintas_recomendadas: [],
+        },
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.error || 'No he podido guardar el feedback');
+    }
+
+    input.value = '';
+    updateFeedbackCount();
+    showFeedbackReward(data.reward);
+    toggleFeedbackPanel(true);
+  } catch (error) {
+    alert(error.message || 'No he podido guardar el feedback');
+  } finally {
+    if (sendBtn) {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Enviar feedback';
+    }
+  }
+}
+
+function copyRewardCode() {
+  const code = String(document.getElementById('feedback-reward-code')?.textContent || '').trim();
+  if (!code) return;
+  navigator.clipboard?.writeText(code).catch(() => {});
+}
+
+toggleFeedbackPanel(true);
+
+// â”€â”€ MENSAJES DE ATOMX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const mensajes = {
-  idle:      "¡Hola rey! ¿Qué diseño quieres enseñarme? 🤙",
-  uploaded:  "¡Eso tiene muy buena pinta! Dale y te digo las tintas exactas 🔥",
-  thinking:  "Espera que me lo estoy mirando bien... analizando colores 🧐",
-  results:   "¡Fuego puro! Aquí tienes todo lo que necesitas 🎨",
-  error:     "Uy, algo ha fallado... Prueba otra vez tío 😅"
+  idle:      "Hola, ensename el diseno y te digo las tintas.",
+  uploaded:  "Tiene muy buena pinta. Cuando quieras, lo analizo.",
+  thinking:  "Estoy analizando colores y buscando las mejores tintas del catalogo.",
+  results:   "Listo. Aqui tienes la recomendacion completa.",
+  error:     "Algo ha fallado. Prueba otra vez."
 };
 
 // Expresiones SVG: [eye-l-r, eye-l-cy, eye-r-r, eye-r-cy, mouth-d]
@@ -772,14 +2134,306 @@ const caras = {
   error:    { lx:48, ly:51, lr:3,  rx:62, ry:51, rr:3,  m:"M47 65 Q55 58 63 65" },
 };
 
-// ── STATE ──────────────────────────────────────────────────────────────
+// â”€â”€ STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let imageBase64 = null;
 let imageMediaType = 'image/jpeg';
 let loadingInterval = null;
 let selectedSkin = 1;
 let extractedColors = [];
+var feedbackOpen = false;
+var paletteOpen = false;
+var paletteSamples = [];
+var selectedPaletteHex = '';
+let selectedInkChoices = new Map();
+let currentHexMatches = [];
+let previewTransform = { scale: 1, x: 0, y: 0 };
+let previewGesture = {
+  active: false,
+  mode: 'none',
+  startX: 0,
+  startY: 0,
+  originX: 0,
+  originY: 0,
+  startScale: 1,
+  startDistance: 0,
+};
+const ANALYSIS_MAX_DIM = 1800;
+const UPLOAD_MAX_BYTES = 3.5 * 1024 * 1024;
 
-// ── UTILIDADES COLOR ────────────────────────────────────────────────────
+function escapeHtml(value = '') {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function makeInkSelectionKey(item = {}, fallbackName = '') {
+  return String(item?.referencia || normalizeText(item?.nombre || fallbackName || `ink-${Date.now()}`)).replace(/\s+/g, '-');
+}
+
+function toggleInkSelection(input) {
+  if (!input) return;
+  const optionCard = input.closest('.tinta-option');
+  const payload = {
+    key: input.dataset.key,
+    name: input.dataset.name || 'Tinta',
+    brand: input.dataset.brand || '',
+    sku: input.dataset.sku || '',
+    price: Number(input.dataset.price || 0),
+    link: input.dataset.link || '',
+    cartLink: input.dataset.cartLink || '',
+    colorBase: input.dataset.colorBase || '',
+    category: input.dataset.category || '',
+  };
+
+  if (input.checked) {
+    selectedInkChoices.set(payload.key, payload);
+  } else {
+    selectedInkChoices.delete(payload.key);
+  }
+  if (optionCard) optionCard.classList.toggle('selected', !!input.checked);
+  updateSelectionSummary();
+}
+
+function toggleInkOptionCard(checkboxId) {
+  const input = document.getElementById(checkboxId);
+  if (!input) return;
+  input.checked = !input.checked;
+  toggleInkSelection(input);
+}
+
+function getSelectedInkEntries() {
+  return [...selectedInkChoices.values()];
+}
+
+function getTouchDistance(touchA, touchB) {
+  const dx = touchB.clientX - touchA.clientX;
+  const dy = touchB.clientY - touchA.clientY;
+  return Math.sqrt((dx * dx) + (dy * dy));
+}
+
+function applyPreviewTransform() {
+  const preview = document.getElementById('preview-img');
+  const overlay = document.getElementById('preview-overlay');
+  const scale = Math.max(1, Math.min(2.5, Number(previewTransform.scale || 1)));
+  const x = Number(previewTransform.x || 0);
+  const y = Number(previewTransform.y || 0);
+  if (preview) {
+    preview.style.setProperty('--preview-scale', scale);
+    preview.style.setProperty('--preview-x', `${x}px`);
+    preview.style.setProperty('--preview-y', `${y}px`);
+  }
+  if (overlay) {
+    overlay.style.setProperty('--preview-scale', scale);
+    overlay.style.setProperty('--preview-x', `${x}px`);
+    overlay.style.setProperty('--preview-y', `${y}px`);
+  }
+}
+
+function setupPreviewGestures() {
+  const zone = document.getElementById('upload-zone');
+  if (!zone || zone.dataset.gesturesReady === '1') return;
+  zone.dataset.gesturesReady = '1';
+
+  zone.addEventListener('touchstart', (event) => {
+    if (!imageBase64) return;
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      previewGesture.active = true;
+      previewGesture.mode = 'pan';
+      previewGesture.startX = touch.clientX;
+      previewGesture.startY = touch.clientY;
+      previewGesture.originX = previewTransform.x;
+      previewGesture.originY = previewTransform.y;
+    } else if (event.touches.length >= 2) {
+      previewGesture.active = true;
+      previewGesture.mode = 'pinch';
+      previewGesture.startDistance = getTouchDistance(event.touches[0], event.touches[1]);
+      previewGesture.startScale = previewTransform.scale;
+    }
+  }, { passive: true });
+
+  zone.addEventListener('touchmove', (event) => {
+    if (!imageBase64 || !previewGesture.active) return;
+    if (previewGesture.mode === 'pan' && event.touches.length === 1) {
+      const touch = event.touches[0];
+      previewTransform.x = previewGesture.originX + (touch.clientX - previewGesture.startX);
+      previewTransform.y = previewGesture.originY + (touch.clientY - previewGesture.startY);
+      applyPreviewTransform();
+    } else if (previewGesture.mode === 'pinch' && event.touches.length >= 2) {
+      const distance = getTouchDistance(event.touches[0], event.touches[1]);
+      if (previewGesture.startDistance > 0) {
+        previewTransform.scale = Math.max(1, Math.min(2.5, previewGesture.startScale * (distance / previewGesture.startDistance)));
+        applyPreviewTransform();
+      }
+    }
+  }, { passive: true });
+
+  zone.addEventListener('touchend', () => {
+    previewGesture.active = false;
+    previewGesture.mode = 'none';
+  }, { passive: true });
+}
+
+function renderSelectedAnalysisSummary(entries = []) {
+  const resumenBody = document.getElementById('analysis-summary-body');
+  const resumenTotal = document.getElementById('analysis-summary-total');
+  if (!resumenBody || !resumenTotal) return;
+
+  if (!entries.length) {
+    resumenBody.innerHTML = `
+      <div class="resumen-row">
+        <span style="color:var(--muted)">Sin tintas seleccionadas todavia</span>
+        <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">Marca los checks</span>
+      </div>`;
+    resumenTotal.textContent = '0.00EUR';
+    return;
+  }
+
+  resumenBody.innerHTML = entries.map((item) => `
+    <div class="resumen-row">
+      <span style="color:var(--muted)">${escapeHtml(item.colorBase || item.category || 'Tinta')}</span>
+      <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">${escapeHtml(item.name || 'Tinta')}${item.sku ? ` / SKU ${escapeHtml(item.sku)}` : ''}</span>
+    </div>`).join('');
+  const total = entries.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  resumenTotal.textContent = `${total.toFixed(2)}EUR`;
+}
+
+function updateSelectionSummary() {
+  const target = document.getElementById('selection-summary');
+  if (!target) return;
+
+  const entries = getSelectedInkEntries();
+  if (!entries.length) {
+    target.innerHTML = 'Selecciona las tintas que te cuadren y te preparo una salida limpia para compra manual o para abrirlas en tu tienda.';
+    renderSelectedAnalysisSummary([]);
+    return;
+  }
+
+  const total = entries.reduce((sum, item) => sum + Number(item.price || 0), 0);
+  target.innerHTML = `
+    <strong>${entries.length} tintas seleccionadas</strong><br>
+    ${entries.map((item) => `${escapeHtml(item.name)}${item.brand ? ` / ${escapeHtml(item.brand)}` : ''}${item.sku ? ` / SKU ${escapeHtml(item.sku)}` : ''}`).join('<br>')}
+    <div style="margin-top:8px;color:var(--text)">Total orientativo: ${total.toFixed(2)} EUR</div>
+  `;
+  renderSelectedAnalysisSummary(entries);
+}
+
+function copySelectedInkList() {
+  const entries = getSelectedInkEntries();
+  if (!entries.length) {
+    alert('Primero selecciona al menos una tinta.');
+    return;
+  }
+  const text = [
+    'SELECCION DE TINTAS ATOM X',
+    ...entries.map((item) => `- ${item.name}${item.brand ? ` / ${item.brand}` : ''}${item.sku ? ` / SKU ${item.sku}` : ''}${item.price ? ` / ${Number(item.price).toFixed(2)} EUR` : ''}`),
+  ].join('\n');
+  navigator.clipboard?.writeText(text).then(() => {
+    const target = document.getElementById('selection-summary');
+    if (target) {
+      target.innerHTML = `${target.innerHTML}<div style="margin-top:8px;color:var(--green)">Lista copiada para compra manual.</div>`;
+    }
+  }).catch(() => {});
+}
+
+function openSelectedInkLinks() {
+  const entries = getSelectedInkEntries();
+  if (!entries.length) {
+    alert('No hay links de tienda en la seleccion actual.');
+    return;
+  }
+  const cartEntries = entries
+    .filter((item) => item.cartLink)
+    .map((item) => ({ ...item, link: item.cartLink }))
+    .filter((item, index, array) => array.findIndex((current) => current.link === item.link) === index);
+  const searchEntries = entries
+    .filter((item) => !item.cartLink)
+    .map((item) => ({
+      ...item,
+      link: item.link || `https://www.atomxsupply.com/busqueda?controller=search&s=${encodeURIComponent(item.name || '')}`,
+    }))
+    .filter((item, index, array) => array.findIndex((current) => current.link === item.link) === index);
+
+  const target = document.getElementById('selection-summary');
+  const notes = [];
+  if (cartEntries.length) {
+    cartEntries.forEach((item, index) => {
+      setTimeout(() => window.open(item.link, '_blank', 'noopener'), index * 160);
+    });
+    setTimeout(() => {
+      window.open('https://www.atomxsupply.com/index.php?controller=cart&action=show', '_blank', 'noopener');
+    }, cartEntries.length * 160 + 220);
+    notes.push(`${cartEntries.length} tinta(s) van directas al carrito real y se suman a lo que ya tengas.`);
+  }
+  if (searchEntries.length) {
+    searchEntries.forEach((item, index) => {
+      setTimeout(() => window.open(item.link, '_blank', 'noopener'), (cartEntries.length * 160) + 420 + (index * 140));
+    });
+    notes.push(`${searchEntries.length} tinta(s) se abren en busqueda limpia porque no tienen carrito directo.`);
+  }
+  if (target && notes.length) {
+    target.innerHTML = `${target.innerHTML}<div style="margin-top:8px;color:var(--green)">${notes.join(' ')}</div>`;
+  }
+}
+
+function buildUiInkCandidates(tintaConfig = {}, styleKey = 'generico') {
+  const categoria = tintaConfig.categoria || '';
+  const functionHint = tintaConfig.funcion || '';
+  const seeds = [
+    tintaConfig.opcion1?.tinta || '',
+    tintaConfig.opcion2?.tinta || '',
+    tintaConfig.color_base || '',
+  ].filter(Boolean);
+
+  const uniqueMap = new Map();
+  const exactSkuCandidates = [
+    tintaConfig.opcion1?.sku ? findCatalogItemBySku(tintaConfig.opcion1.sku, 'MIXTO') : null,
+    tintaConfig.opcion2?.sku ? findCatalogItemBySku(tintaConfig.opcion2.sku, 'MIXTO') : null,
+  ].filter(Boolean);
+
+  exactSkuCandidates.forEach((item) => {
+    const key = makeInkSelectionKey(item, item.nombre || '');
+    uniqueMap.set(key, item);
+  });
+
+  seeds.forEach((seed) => {
+    listCandidatesForReference(seed).forEach((item) => {
+      const key = makeInkSelectionKey(item, item.nombre || seed);
+      if (!uniqueMap.has(key)) uniqueMap.set(key, item);
+    });
+  });
+
+  const ranked = [...uniqueMap.values()]
+    .map((item) => {
+      const request = [tintaConfig.opcion1?.tinta, tintaConfig.opcion2?.tinta, tintaConfig.color_base].filter(Boolean).join(' ');
+      const normalizedRequest = normalizeText(request);
+      const normalizedName = normalizeText(item.nombre || '');
+      let score = 0;
+      score += scoreBrandForStyle(styleKey, categoria || item.categoria, item.marca);
+      score += scoreStudioKnowledge(item, request, categoria || item.categoria, styleKey, functionHint);
+      if (String(item.categoria || '').toLowerCase() === String(categoria || '').toLowerCase()) score += 4;
+      if (normalizedRequest && normalizedName && normalizedRequest.includes(normalizedName)) score += 4;
+      if (normalizedName && normalizedRequest && normalizedName.includes(normalizedRequest)) score += 6;
+      if (item.stock == null) score += 0;
+      else if (Number(item.stock) > 0) score += 2;
+      else score -= 2;
+      return { item, score };
+    })
+    .sort((a, b) => b.score - a.score || String(a.item.nombre || '').localeCompare(String(b.item.nombre || '')))
+    .slice(0, 3)
+    .map(({ item }) => item);
+
+  if (ranked.length) return ranked;
+
+  const fallback1 = resolveInkForUI(tintaConfig.opcion1?.tinta || '', categoria, tintaConfig.opcion1?.sku || '', styleKey, functionHint).item;
+  const fallback2 = resolveInkForUI(tintaConfig.opcion2?.tinta || '', categoria, tintaConfig.opcion2?.sku || '', styleKey, functionHint).item;
+  return [fallback1, fallback2].filter(Boolean).slice(0, 3);
+}
+
+// â”€â”€ UTILIDADES COLOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function rgbToHsl(r, g, b) {
   r /= 255; g /= 255; b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -797,13 +2451,80 @@ function rgbToHsl(r, g, b) {
   return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
 }
 
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+
+function base64Size(base64) {
+  return Math.ceil((base64.length * 3) / 4);
+}
+
+function resizeCanvas(sourceCanvas, maxDim) {
+  const scale = Math.min(1, maxDim / Math.max(sourceCanvas.width, sourceCanvas.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(sourceCanvas.width * scale));
+  canvas.height = Math.max(1, Math.round(sourceCanvas.height * scale));
+  canvas.getContext('2d').drawImage(sourceCanvas, 0, 0, canvas.width, canvas.height);
+  return canvas;
+}
+
+function createAnalysisCanvas(imgEl) {
+  let w = imgEl.width;
+  let h = imgEl.height;
+  if (w > ANALYSIS_MAX_DIM || h > ANALYSIS_MAX_DIM) {
+    if (w > h) {
+      h = Math.round(h * ANALYSIS_MAX_DIM / w);
+      w = ANALYSIS_MAX_DIM;
+    } else {
+      w = Math.round(w * ANALYSIS_MAX_DIM / h);
+      h = ANALYSIS_MAX_DIM;
+    }
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext('2d').drawImage(imgEl, 0, 0, w, h);
+  return canvas;
+}
+
+function buildUploadImage(canvas) {
+  let workingCanvas = canvas;
+  let quality = 0.9;
+  let dataUrl = workingCanvas.toDataURL('image/jpeg', quality);
+  let base64 = dataUrl.split(',')[1];
+
+  while (base64Size(base64) > UPLOAD_MAX_BYTES) {
+    if (quality > 0.55) {
+      quality -= 0.08;
+    } else {
+      workingCanvas = resizeCanvas(workingCanvas, Math.round(Math.max(workingCanvas.width, workingCanvas.height) * 0.84));
+      quality = 0.82;
+    }
+
+    dataUrl = workingCanvas.toDataURL('image/jpeg', quality);
+    base64 = dataUrl.split(',')[1];
+
+    if (workingCanvas.width <= 420 || workingCanvas.height <= 420) break;
+  }
+
+  return {
+    base64,
+    mediaType: 'image/jpeg',
+    width: workingCanvas.width,
+    height: workingCanvas.height,
+    quality: Number(quality.toFixed(2)),
+    bytes: base64Size(base64),
+  };
+}
+
 function isSkinTone(h, s, l) {
-  // Filtra SOLO tonos de piel humana real del fondo/brazo:
-  // matiz muy cálido (naranja-melocotón), saturación BAJA (piel natural no es muy saturada),
-  // luminosidad ALTA (la piel expuesta es clara en foto)
-  // Colores carne usados en tatuajes tienen mayor saturación o menor luminosidad
-  const warmHue = (h >= 10 && h <= 35);
-  return warmHue && s >= 8 && s <= 38 && l >= 55 && l <= 85;
+  // Lo hacemos bastante conservador para no cargarnos amarillos, melocotones
+  // o beiges del propio tattoo. Solo filtramos tonos piel muy plausibles.
+  const warmHue = (h >= 12 && h <= 28);
+  const softSat = s >= 8 && s <= 26;
+  const midLight = l >= 52 && l <= 82;
+  return warmHue && softSat && midLight;
 }
 
 function hslToCategory(h, s, l) {
@@ -823,7 +2544,7 @@ function hslToCategory(h, s, l) {
   return 'rojos';
 }
 
-// Distancia perceptual HSL (más precisa que distancia RGB para tintas)
+// Distancia perceptual HSL (mas precisa que RGB para tintas)
 function hslDistance(h1, s1, l1, h2, s2, l2) {
   const dh = Math.min(Math.abs(h1 - h2), 360 - Math.abs(h1 - h2)) / 180;
   const ds = Math.abs(s1 - s2) / 100;
@@ -831,54 +2552,255 @@ function hslDistance(h1, s1, l1, h2, s2, l2) {
   return Math.sqrt(dh * dh * 2 + ds * ds + dl * dl * 1.5);
 }
 
-// ── EXTRACTOR DE COLORES (Canvas + HSL) ────────────────────────────────
+function getColorImportance(h, s, l, count) {
+  const chromaBoost = s >= 20 ? 1 + (s / 180) : 0.9;
+  const contrastBoost = (l <= 18 || l >= 82) ? 1.08 : 1;
+  return count * chromaBoost * contrastBoost;
+}
+
+function getColorRole(index, percentage, hsl) {
+  const [, s, l] = hsl;
+  if (index === 0) return 'dominante';
+  if (l <= 18) return 'sombra';
+  if (l >= 82 && s <= 22) return 'luz';
+  if (percentage < 6) return 'acento';
+  return 'secundario';
+}
+
 function getDominantColors(canvas, n) {
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
   const data = ctx.getImageData(0, 0, w, h).data;
   const buckets = {};
-  const step = Math.max(4, Math.floor(w * h / 4000));
+  const step = Math.max(1, Math.floor((w * h) / 14000));
+  const gridCols = 14;
+  const gridRows = 14;
+  let total = 0;
 
   for (let i = 0; i < data.length; i += 4 * step) {
     const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
     if (a < 180) continue;
     const [hh, ss, ll] = rgbToHsl(r, g, b);
-    // Quitar blancos/negros puros de fondo
-    if (ll > 94 || ll < 5) continue;
-    // Bucket en espacio HSL: más fino en matiz (8°), más grueso en S/L
-    const bh = Math.round(hh / 8) * 8;
-    const bs = Math.round(ss / 10) * 10;
-    const bl = Math.round(ll / 8) * 8;
+    if (ll > 97 || ll < 3) continue;
+    total++;
+
+    const hueBucket = ss < 14 ? 'neutral' : Math.round(hh / 6) * 6;
+    const satBucket = Math.round(ss / 8) * 8;
+    const lightBucket = Math.round(ll / 6) * 6;
+    const bh = hueBucket;
+    const bs = satBucket;
+    const bl = lightBucket;
     const key = `${bh},${bs},${bl}`;
-    if (!buckets[key]) buckets[key] = { count: 0, rSum: 0, gSum: 0, bSum: 0 };
+    if (!buckets[key]) buckets[key] = {
+      count: 0,
+      rSum: 0,
+      gSum: 0,
+      bSum: 0,
+      xSum: 0,
+      ySum: 0,
+      cells: {},
+    };
     buckets[key].count++;
     buckets[key].rSum += r;
     buckets[key].gSum += g;
     buckets[key].bSum += b;
+    const pixelIndex = i / 4;
+    const x = pixelIndex % w;
+    const y = Math.floor(pixelIndex / w);
+    buckets[key].xSum += x;
+    buckets[key].ySum += y;
+    const cellX = Math.max(0, Math.min(gridCols - 1, Math.floor((x / w) * gridCols)));
+    const cellY = Math.max(0, Math.min(gridRows - 1, Math.floor((y / h) * gridRows)));
+    const cellKey = `${cellX},${cellY}`;
+    buckets[key].cells[cellKey] = (buckets[key].cells[cellKey] || 0) + 1;
   }
 
-  // Ordenar por frecuencia y filtrar similares usando distancia HSL
   const candidates = Object.entries(buckets)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, n * 5);
+    .map(([key, val]) => {
+      const r = Math.round(val.rSum / val.count);
+      const g = Math.round(val.gSum / val.count);
+      const b = Math.round(val.bSum / val.count);
+      const hsl = rgbToHsl(r, g, b);
+      const peakCellEntry = Object.entries(val.cells || {}).sort((a, b) => b[1] - a[1])[0];
+      const [peakCellX, peakCellY] = peakCellEntry
+        ? peakCellEntry[0].split(',').map(Number)
+        : [Math.floor(gridCols / 2), Math.floor(gridRows / 2)];
+      const peakX = ((peakCellX + 0.5) / gridCols) * w;
+      const peakY = ((peakCellY + 0.5) / gridRows) * h;
+      return {
+        key,
+        count: val.count,
+        rgb: [r, g, b],
+        hsl,
+        hex: rgbToHex(r, g, b),
+        categoria: hslToCategory(hsl[0], hsl[1], hsl[2]),
+        importancia: getColorImportance(hsl[0], hsl[1], hsl[2], val.count),
+        centroid: {
+          x: peakX,
+          y: peakY,
+          width: w,
+          height: h,
+        },
+      };
+    })
+    .sort((a, b) => b.importancia - a.importancia)
+    .slice(0, n * 8);
 
   const result = [];
-  for (const [key, val] of candidates) {
-    const r = Math.round(val.rSum / val.count);
-    const g = Math.round(val.gSum / val.count);
-    const b = Math.round(val.bSum / val.count);
-    const [hh, ss, ll] = rgbToHsl(r, g, b);
-    const dupe = result.some(c => hslDistance(hh, ss, ll, c.hsl[0], c.hsl[1], c.hsl[2]) < 0.18);
+  for (const candidate of candidates) {
+    const [hh, ss, ll] = candidate.hsl;
+    const dupe = result.some(c => hslDistance(hh, ss, ll, c.hsl[0], c.hsl[1], c.hsl[2]) < (ss < 16 ? 0.12 : 0.16));
     if (!dupe && !isSkinTone(hh, ss, ll)) {
-      const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-      result.push({ rgb: [r, g, b], hsl: [hh, ss, ll], hex, categoria: hslToCategory(hh, ss, ll) });
+      result.push({
+        rgb: candidate.rgb,
+        hsl: candidate.hsl,
+        hex: candidate.hex,
+        categoria: candidate.categoria,
+        porcentaje: total ? Number(((candidate.count / total) * 100).toFixed(1)) : 0,
+        centroid: candidate.centroid,
+      });
     }
     if (result.length >= n) break;
   }
-  return result;
+
+  const selectedTotal = result.reduce((sum, c) => sum + c.porcentaje, 0) || 1;
+  return result.map((color, index) => ({
+    ...color,
+    porcentaje: Number(((color.porcentaje / selectedTotal) * 100).toFixed(1)),
+    papel: getColorRole(index, color.porcentaje, color.hsl),
+  }));
 }
 
-// ── ATOMX CONTROLLER ───────────────────────────────────────────────────
+function hexDistance(hexA = '', hexB = '') {
+  const a = String(hexA || '').replace('#', '');
+  const b = String(hexB || '').replace('#', '');
+  if (!/^[0-9a-f]{6}$/i.test(a) || !/^[0-9a-f]{6}$/i.test(b)) return 999999;
+  const ar = parseInt(a.slice(0, 2), 16);
+  const ag = parseInt(a.slice(2, 4), 16);
+  const ab = parseInt(a.slice(4, 6), 16);
+  const br = parseInt(b.slice(0, 2), 16);
+  const bg = parseInt(b.slice(2, 4), 16);
+  const bb = parseInt(b.slice(4, 6), 16);
+  return Math.sqrt(((ar - br) ** 2) + ((ag - bg) ** 2) + ((ab - bb) ** 2));
+}
+
+function buildPreviewMarkerPayload(colors = [], recomendaciones = []) {
+  const recs = recomendaciones || [];
+  return (colors || []).map((color) => {
+    const best = recs
+      .map((rec, index) => ({
+        rec,
+        index,
+        distance: hexDistance(color.hex, rec.hex_objetivo || ''),
+      }))
+      .sort((a, b) => a.distance - b.distance)[0];
+
+    return {
+      ...color,
+      tintaId: best ? `tinta-card-${best.index}` : '',
+      tintaColorBase: best?.rec?.color_base || color.nombre || '',
+      tintaLabel: best?.rec?.opcion1?.tinta || best?.rec?.color_base || color.nombre || color.hex,
+    };
+  });
+}
+
+function getPreviewImageGeometry() {
+  const overlay = document.getElementById('preview-overlay');
+  const preview = document.getElementById('preview-img');
+  if (!overlay || !preview) return null;
+
+  const overlayW = overlay.clientWidth || overlay.offsetWidth || 1;
+  const overlayH = overlay.clientHeight || overlay.offsetHeight || 1;
+  const srcW = preview.naturalWidth || preview.clientWidth || overlayW;
+  const srcH = preview.naturalHeight || preview.clientHeight || overlayH;
+  const scale = Math.min(overlayW / srcW, overlayH / srcH);
+  const renderedW = srcW * scale;
+  const renderedH = srcH * scale;
+
+  return {
+    overlayW,
+    overlayH,
+    srcW,
+    srcH,
+    scale,
+    renderedW,
+    renderedH,
+    offsetX: (overlayW - renderedW) / 2,
+    offsetY: (overlayH - renderedH) / 2,
+  };
+}
+
+function setActiveVisualTarget(targetName = '', tintaId = '') {
+  const target = String(targetName || '').trim().toLowerCase();
+
+  document.querySelectorAll('.tinta-card').forEach((card) => {
+    const base = String(card.getAttribute('data-color-base') || '').trim().toLowerCase();
+    const matchByName = target && (base.includes(target) || target.includes(base));
+    const matchById = tintaId && card.id === tintaId;
+    const match = matchByName || matchById;
+    card.style.borderColor = match ? 'rgba(255,77,0,0.55)' : '';
+    card.style.boxShadow = match ? '0 0 0 1px rgba(255,77,0,0.2) inset' : '';
+  });
+
+  document.querySelectorAll('.color-swatch').forEach((swatch) => {
+    const base = String(swatch.getAttribute('data-color-name') || '').trim().toLowerCase();
+    const match = target && (base.includes(target) || target.includes(base));
+    swatch.classList.toggle('target', !!match);
+  });
+
+  document.querySelectorAll('.preview-marker').forEach((marker) => {
+    const base = String(marker.getAttribute('data-target-name') || '').trim().toLowerCase();
+    const matchByName = target && (base.includes(target) || target.includes(base));
+    const matchById = tintaId && marker.getAttribute('data-target-id') === tintaId;
+    marker.style.filter = matchByName || matchById ? 'drop-shadow(0 0 10px rgba(255,77,0,0.7))' : '';
+  });
+}
+
+function renderPreviewMarkers(colors = [], recomendaciones = []) {
+  const overlay = document.getElementById('preview-overlay');
+  if (!overlay) return;
+  overlay.innerHTML = '';
+
+  const markers = buildPreviewMarkerPayload(colors, recomendaciones)
+    .filter((color) => color?.centroid && color.porcentaje >= 6)
+    .slice(0, 6);
+
+  const geometry = getPreviewImageGeometry();
+  if (!geometry) return;
+
+  markers.forEach((color) => {
+    const srcW = color.centroid?.width || geometry.srcW;
+    const srcH = color.centroid?.height || geometry.srcH;
+    const xRatio = srcW ? color.centroid.x / srcW : 0.5;
+    const yRatio = srcH ? color.centroid.y / srcH : 0.5;
+    const x = geometry.offsetX + (xRatio * geometry.renderedW);
+    const y = geometry.offsetY + (yRatio * geometry.renderedH);
+    const cx = (x / geometry.overlayW) * 100;
+    const cy = (y / geometry.overlayH) * 100;
+    const marker = document.createElement('div');
+    marker.className = 'preview-marker';
+    marker.setAttribute('data-target-name', color.tintaColorBase || color.nombre || '');
+    marker.setAttribute('data-target-id', color.tintaId || '');
+    marker.style.left = `${Math.max(6, Math.min(94, cx))}%`;
+    marker.style.top = `${Math.max(8, Math.min(90, cy))}%`;
+    marker.innerHTML = `
+      <div class="preview-line"></div>
+      <div class="preview-dot" style="background:${color.hex}"></div>
+      <div class="preview-label">${color.tintaColorBase || color.nombre || color.papel || color.categoria || color.hex}</div>
+    `;
+    marker.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setActiveVisualTarget(color.tintaColorBase || color.nombre || '', color.tintaId || '');
+      if (color.tintaId) {
+        const card = document.getElementById(color.tintaId);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+    overlay.appendChild(marker);
+  });
+}
+
+// â”€â”€ ATOMX CONTROLLER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setAtomxState(state) {
   const char = document.getElementById('atomx-char');
   const textEl = document.getElementById('bubble-text');
@@ -906,7 +2828,7 @@ function setAtomxState(state) {
   bubble.className = 'atomx-bubble' + (state === 'results' ? ' highlight' : '');
 }
 
-// ── SKIN SELECTOR ──────────────────────────────────────────────────────
+// â”€â”€ SKIN SELECTOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function selectSkin(btn) {
   document.querySelectorAll('.skin-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -924,14 +2846,14 @@ function unlockSkinSelector() {
 }
 
 const skinInfo = {
-  1: { nombre:"Muy clara",  fitzpatrick:"I-II",  consejo:"Los colores funcionan muy bien. El blanco resalta al máximo. Los amarillos pueden quedar muy pálidos al cicatrizar." },
-  2: { nombre:"Clara",      fitzpatrick:"II-III", consejo:"Excelente para colores vivos. Los pasteles y amarillos funcionan bien. Evitar depender mucho del blanco para highlights." },
-  3: { nombre:"Media",      fitzpatrick:"III-IV", consejo:"Los rojos, naranjas y verdes oscuros funcionan muy bien. Los colores claros pierden algo de saturación." },
-  4: { nombre:"Oscura",     fitzpatrick:"IV-V",   consejo:"Prioriza colores muy saturados y oscuros. El blanco y amarillo no funcionan bien. Los azules y verdes oscuros son ideales." },
-  5: { nombre:"Muy oscura", fitzpatrick:"V-VI",   consejo:"Solo colores muy saturados y oscuros. Evitar completamente blancos, amarillos y pasteles. Negro y colores intensos funcionan." },
+  1: { nombre:"Muy clara",  fitzpatrick:"I-II",  consejo:"Los colores funcionan muy bien. El blanco resalta mucho. Los amarillos pueden quedar algo palidos al cicatrizar." },
+  2: { nombre:"Clara",      fitzpatrick:"II-III", consejo:"Muy buena para colores vivos. Los pasteles y amarillos suelen funcionar bien. Mejor no depender demasiado del blanco para luces." },
+  3: { nombre:"Media",      fitzpatrick:"III-IV", consejo:"Rojos, naranjas y verdes oscuros suelen ir muy bien. Los colores claros pueden perder algo de saturacion." },
+  4: { nombre:"Oscura",     fitzpatrick:"IV-V",   consejo:"Prioriza colores muy saturados y oscuros. El blanco y el amarillo suelen funcionar peor. Azules y verdes oscuros suelen ir mejor." },
+  5: { nombre:"Muy oscura", fitzpatrick:"V-VI",   consejo:"Prioriza negro y colores intensos. Evita blancos, amarillos y pasteles porque suelen perder mucha presencia." },
 };
 
-// ── FILE HANDLING ──────────────────────────────────────────────────────
+// â”€â”€ FILE HANDLING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function handleFile(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -941,26 +2863,23 @@ function handleFile(e) {
     const data = ev.target.result;
     const imgEl = new Image();
     imgEl.onload = () => {
-      const canvas = document.createElement('canvas');
-      const MAX = 1200;
-      let w = imgEl.width, h = imgEl.height;
-      if (w > MAX || h > MAX) {
-        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-        else { w = Math.round(w * MAX / h); h = MAX; }
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(imgEl, 0, 0, w, h);
-      const compressed = canvas.toDataURL('image/jpeg', 0.82);
-      imageBase64 = compressed.split(',')[1];
-      imageMediaType = 'image/jpeg';
-      // Extraer colores reales del canvas
-      extractedColors = getDominantColors(canvas, 10);
+      const analysisCanvas = createAnalysisCanvas(imgEl);
+      const uploadImage = buildUploadImage(analysisCanvas);
+      imageBase64 = uploadImage.base64;
+      imageMediaType = uploadImage.mediaType;
+      extractedColors = getDominantColors(analysisCanvas, 18);
 
       const preview = document.getElementById('preview-img');
       preview.src = data;
+      preview.onload = () => requestAnimationFrame(() => {
+        resetPreviewTransform();
+        renderPreviewMarkers(extractedColors);
+        setupPreviewGestures();
+      });
       preview.style.display = 'block';
       document.getElementById('upload-placeholder').style.display = 'none';
       document.getElementById('upload-zone').classList.add('has-image');
+      document.getElementById('preview-controls')?.classList.add('open');
       document.getElementById('analyze-btn').style.display = 'block';
       lockSkinSelector();
       document.getElementById('results').style.display = 'none';
@@ -972,7 +2891,16 @@ function handleFile(e) {
   reader.readAsDataURL(file);
 }
 
-// ── LOADING ANIMATION ──────────────────────────────────────────────────
+function updatePreviewTransform() {
+  applyPreviewTransform();
+}
+
+function resetPreviewTransform() {
+  previewTransform = { scale: 1, x: 0, y: 0 };
+  applyPreviewTransform();
+}
+
+// â”€â”€ LOADING ANIMATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function startLoadingAnimation() {
   let step = 1;
   loadingInterval = setInterval(() => {
@@ -986,21 +2914,19 @@ function stopLoadingAnimation() {
   if (loadingInterval) clearInterval(loadingInterval);
 }
 
-// ── ANALYZE ────────────────────────────────────────────────────────────
+// â”€â”€ ANALYZE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function analyzeImage() {
   if (!imageBase64) return;
+  if (isAnalyzing) return;
 
   const skin = skinInfo[selectedSkin];
+  isAnalyzing = true;
 
   document.getElementById('analyze-btn').disabled = true;
   document.getElementById('loading').style.display = 'block';
   document.getElementById('results').style.display = 'none';
   setAtomxState('thinking');
   startLoadingAnimation();
-
-  const catalogoResumen = Object.entries(catalogo).map(([color, tintas]) =>
-    `${color}: ${tintas.map(t => `${t.nombre} (${t.precio}EUR)`).join(', ')}`
-  ).join('\n');
 
   const viabilidad = selectedSkin <= 2
     ? "todos los colores funcionan bien"
@@ -1011,55 +2937,140 @@ async function analyzeImage() {
     : "solo negro y colores muy saturados oscuros; amarillo/naranja/blanco/pasteles/colores claros INVIABLES";
 
   const categorias = Object.keys(catalogo).join(', ');
+  const marcasDisponibles = [...new Set(flattenCatalog().map((item) => formatMarca(item.marca)))]
+    .filter(Boolean)
+    .join(', ');
+  const modoMarca = brandInfo[selectedBrandMode]?.label || selectedBrandMode;
+  const catalogoSku = buildCatalogPromptList('MIXTO');
   const colorList = extractedColors.map((c, i) => {
     const [hh, ss, ll] = c.hsl;
-    return `${i+1}. ${c.hex} | H:${hh}° S:${ss}% L:${ll}% | categoría probable: ${c.categoria}`;
+    return `${i+1}. ${c.hex} | H:${hh} S:${ss}% L:${ll}% | peso:${c.porcentaje}% | papel:${c.papel} | categoria:${c.categoria}`;
   }).join('\n');
 
   const estilosInfo = `
-ESTILOS Y TINTAS TÍPICAS:
-- Japonés/Irezumi: negros densos, rojos intensos, verde jade, azul cobalto oscuro, naranja koi, amarillo dorado. Armonía análoga en degradados, complementaria en focos.
-- Traditional/Old School: negros líneas gruesas, rojo/azul/verde/amarillo sólidos sin gradiente. Max 5 colores.
-- Neo-Traditional: como traditional + más gama, gradientes suaves, vibrantes.
-- Realismo/Retrato: escala de grises fríos, negros, desaturados. Armonía monocromática.
-- Blackwork/Dotwork: solo negros máxima densidad.
-- Watercolor: muy saturados sin línea negra, pasteles vivos. Armonía análoga siempre.
+LECTURA DE ESTILO:
+- Realismo color:
+  * manda el parecido visual, volumen y temperatura real
+  * usa menos colores pero mejor elegidos
+  * negros solo para profundidad real, no para ensuciar
+  * si un tono es piel, oro viejo o amarillo calido, no lo conviertas en rosa/carne sin motivo
+- Realismo black and grey:
+  * negros, grises y algun blanco tecnico si hace falta luz
+  * contraste limpio, mucha lectura de volumen
+  * evita colores residuales salvo que sean realmente parte del tattoo
+- Tradicional:
+  * pocos colores, muy solidos, muy legibles
+  * lineas fuertes, negros claros, rojos, verdes, amarillos, azules clasicos
+  * Dermaglo puntua muy alto aqui si el color existe
+- Neotradicional:
+  * mas gama que tradicional, pero sin perder pegada
+  * sombras ricas, transiciones mas suaves, colores intensos
+  * Eternal, Vice y Radiant suelen cuadrar mejor por variedad
+- Anime / New School:
+  * colores mas vivos, contrastes altos, acentos muy claros y saturados
+  * lectura cartoon, cel shading, bloques muy definidos
+  * Vice Colors y Eternal suelen ser muy utiles aqui
+
+OTROS ESTILOS DE APOYO:
+- Japones/Irezumi: negros densos, rojos intensos, verde jade, azul cobalto oscuro, naranja koi, amarillo dorado. Armonia analoga en degradados, complementaria en focos.
+- Blackwork/Dotwork: solo negros de maxima densidad.
+- Watercolor: muy saturados sin linea negra, pasteles vivos. Armonia analoga siempre.
 - Chicano: solo grises y negros.
-- Fine Line: negro suave para líneas finas, grises muy diluidos.
-- New School: colores cartoon muy saturados, complementarios para impacto.`;
+- Fine Line: negro suave para lineas finas, grises muy diluidos.`;
 
-  const prompt = `Eres ATOMX, experto colorista en tintas Eternal Ink para tatuaje. Analiza la imagen.
+  const criterioVisualInfo = `
+CRITERIO VISUAL ATOM X:
+- No copies solo el color visible: interpreta la funcion de cada zona dentro de la pieza.
+- Piensa como tatuador: que parte debe avanzar, cual debe retroceder, cual necesita respirar y cual necesita separacion.
+- Una sombra no siempre es negro. Una luz no siempre es blanco. Una transicion buena puede ser mas importante que el color principal.
+- Dos zonas parecidas pueden pedir tonos distintos si su funcion visual no es la misma.
+- Si una excepcion mejora claramente la lectura general, puedes romper la logica basica.
 
-PASO 1 — Detecta el ESTILO del tatuaje.
-PASO 2 — Analiza dominante/secundario, temperatura, saturación y valor tonal de la imagen.
-PASO 3 — Recomienda tintas Eternal por FUNCIÓN (base, sombra, transición, luz, línea), no solo por parecido RGB. Prioriza legibilidad en piel antes que copiar el color exacto. Usa 3-8 colores máximo salvo diseños complejos. Aplica armonía análoga para degradados, complementaria para focos. Si no hay match exacto, elige el Eternal más tatuable por temperatura, profundidad y saturación.
+PRIORIDAD DE DECISION:
+1. lectura general de la pieza
+2. volumen y profundidad
+3. armonia entre zonas
+4. contraste util
+5. fidelidad al color base
+6. saturacion/intensidad
 
-COLORES MEDIDOS (tonos de piel de la persona ya filtrados — si ves color carne en el diseño inclúyelo):
+COMPORTAMIENTO ESPERADO:
+- decide por zonas, pero mirando siempre el tatuaje completo
+- detecta si una zona funciona como base, sombra, transicion, luz, linea o espacio de respiro
+- si falta un tono puente util, puedes proponerlo aunque no sea el color dominante exacto
+- evita usar negro o blanco por sistema si otra solucion mantiene mejor la pieza`;
+
+  const prompt = `Eres ATOMX, experto colorista en tintas de tatuaje (negra/blanca/color). Analiza la imagen.
+
+PASO 1 - Detecta el ESTILO del tatuaje.
+PASO 2 - Analiza dominante/secundario, temperatura, saturacion y valor tonal de la imagen completa.
+ PASO 3 - Recomienda tintas del catalogo por FUNCION (base, sombra, transicion, luz, linea), no solo por parecido RGB. Prioriza legibilidad en piel antes que copiar el color exacto. Usa como salida final entre 4 y 7 tintas clave. Si el diseno tiene muchos tonos, agrupalos en familias utiles para tatuaje sin perder la lectura real.
+PASO 4 - Antes de recomendar, usa TODA la paleta medida. No te quedes con 3 o 4 tonos si la imagen tiene mas color.
+
+COLORES MEDIDOS EN ALTA RESOLUCION (tono de piel de la persona ya filtrado; si el diseno usa color carne de forma real, incluyelo):
 ${colorList}
 
 PIEL: ${skin.nombre} (Fitzpatrick ${skin.fitzpatrick})
 VIABILIDAD: ${viabilidad}
 
 ${estilosInfo}
+${criterioVisualInfo}
 
-REGLAS COLORIMETRÍA:
-- Rojos H:0-14° S>70: Crimson Red / Ruby Red / Vette Red
-- Rojos H:0-14° S 40-70 o L<35: Deep Red / Dark Red / Undead Red
-- Rojo-naranja H:15-30°: Rusty Red / Burnt Orange
-- Melanina filtra cálidos/claros en FT III+; negro/azul oscuro estables siempre
+REGLAS COLORIMETRIA:
+- Melanina filtra calidos y claros en FT III+; negro y azul oscuro estables siempre
 - Blanco/amarillo inviables FT IV+; pastel desaparece en piel media/oscura
-- Evitar exceso de tonos que compiten entre sí
+- Amarillo calido claro NO debe convertirse automaticamente en color carne. Si la saturacion es real, tratalo como amarillo.
+- Evita exceso de tonos que compiten entre si
 
-CATÁLOGO — CATEGORÍAS DISPONIBLES: ${categorias}
+CATALOGO:
+- CATEGORIAS: ${categorias}
+- MARCAS DISPONIBLES: ${marcasDisponibles}
 
-Para cada color da EXACTAMENTE 2 tintas Eternal (opción principal y alternativa más contrastada que cure mejor).
-Formato de salida para cada tinta: ZONA / FUNCIÓN / COLOR ETERNAL / MOTIVO
+MODO DE DECISION DE COLOR: ${modoMarca}
+REGLAS DE MARCA:
+- Eternal = densa, estable y muy completa en gama. Muy buena para quien empieza y para color fiable.
+- Radiant = mas liquida y muy facil de meter. Muy buena para gente que empieza y para realismo/color limpio.
+- Vice Colors = colores muy compactos y negros muy potentes.
+- Dynamic = viejaconfiable. Mucha gente la usa para todo al empezar. En negro y dilucion funciona muy bien.
+- Hype Ink tambien se usa para diluciones. Vice negro = muy potente. Luego Dynamic como negro facil y universal.
+- Mejor blanco para realismo: Super White de Radiant. Vice White muy bueno si quieren mas espesor. Nuclear White = muy denso. Tradicional suele usar tambien Dynamic White y Dermaglo/Nuclear según mano.
+- LINEA FINA NEGRA: prioriza Dynamic Black si existe una opcion equivalente.
+- LINEA GRUESA NEGRA: ya puedes ir a Triple Black o negro mas pesado.
+- BLACKWORK / PACKING: orden real de recomendacion = Vice, Allegory, Dynamic Triple Black, Radiant.
+- DILUCIONES / GREYWASH: prioriza Dynamic Black y Hype.
+- RETOQUE: mantener el mismo negro base si tiene sentido, no cambiar por cambiar.
+- SUBTONO NEGRO: Vice tiende mas a azul, Dynamic puede tender mas a verde. Si el subtono importa, tenlo en cuenta.
+- COLOR PARA PRINCIPIANTE: Radiant y Eternal son las bases mas faciles y fiables.
+- TRADICIONAL: Dermaglo puntua muy alto si existe el color.
+- REALISMO COLOR: Radiant gana peso, luego Eternal y despues Vice.
+- ANIME / NEW SCHOOL: Vice gana peso, luego Radiant y despues Eternal.
+- PIeles oscuras: evita recomendar blanco, pastel o amarillo claro como solucion principal; prioriza colores mas solidos y oscuros.
+- En NEGROS y BLANCOS usa la mejor opcion tecnica del catalogo.
+- En COLOR piensa en modo mixto real de estudio: mezcla Eternal, Vice Colors y Radiant segun lo que mejor funcione para ese color, estilo, piel y uso tecnico.
+- No fuerces una marca si otra resuelve mejor la zona.
+- Ojo con rojos claros de Eternal en piel clara: pueden bajar hacia rosa. Si la intencion visual pide rojo real, recomienda un tono mas tonico/mas fuerte.
+- Referencias utiles de venta/uso real: Eternal Lipstick Red funciona muy bien; "el rojo" de Radiant funciona muy bien; Red Revenge de Vice funciona muy bien; Lightning Yellow de Eternal sale mucho.
+
+REGLA CRITICA:
+- NUNCA inventes nombres.
+- SOLO puedes recomendar nombres EXACTOS del listado de abajo.
+- El nombre y SKU deben existir en el catalogo.
+
+CATALOGO EXACTO DISPONIBLE:
+${catalogoSku}
+
+Para cada color da al menos 2 tintas buenas del catalogo para que luego ATOM X pueda construir 3 opciones finales de compra.
+Formato de salida para cada tinta: ZONA / FUNCION / NOMBRE EXACTO DE TINTA / SKU / MOTIVO
+Respuesta breve. Razones tecnicas de maximo 18 palabras y con criterio visual real.
+No repitas explicaciones largas.
+No superes 7 elementos en "colores_detectados".
+No superes 7 elementos en "tintas_recomendadas".
 
 Responde SOLO JSON sin texto extra ni backticks:
-{"estilo":"estilo detectado","descripcion_estilo":"tintas típicas de este estilo en una frase","colores_detectados":[{"nombre":"nombre descriptivo","hex":"#xxx","porcentaje":30}],"tintas_recomendadas":[{"color_base":"nombre color","zona":"zona del diseño","funcion":"base|sombra|transicion|luz|linea","categoria":"categoria exacta del catalogo","hex_objetivo":"#xxx","opcion1":{"tinta":"Eternal Nombre Exacto","razon":"motivo técnico"},"opcion2":{"tinta":"Eternal Nombre Exacto","razon":"alternativa más contrastada"},"advertencia":"aviso real o vacio"}],"consejo_piel":"consejo específico para piel ${skin.nombre}"}`;
+{"estilo":"estilo detectado","descripcion_estilo":"tintas tipicas de este estilo en una frase","colores_detectados":[{"nombre":"nombre descriptivo","hex":"#xxx","porcentaje":30}],"tintas_recomendadas":[{"color_base":"nombre color","zona":"zona del diseno","funcion":"base|sombra|transicion|luz|linea","categoria":"negra|blanca|color","hex_objetivo":"#xxx","opcion1":{"tinta":"Nombre exacto del catalogo","sku":"SKU exacto","razon":"motivo tecnico"},"opcion2":{"tinta":"Nombre exacto del catalogo","sku":"SKU exacto","razon":"alternativa mas contrastada"},"advertencia":"aviso real o vacio"}],"consejo_piel":"consejo especifico para piel ${skin.nombre}"}`;
 
   try {
-    const response = await fetch("/api/analyze", {
+    const response = await fetch(getAnalyzeEndpoint(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: imageBase64, prompt, mediaType: imageMediaType })
@@ -1080,17 +3091,21 @@ Responde SOLO JSON sin texto extra ni backticks:
     try {
       parsed = JSON.parse(clean);
     } catch(jsonErr) {
-      throw new Error('JSON inválido. Raw: ' + clean.slice(0, 300));
+      throw new Error('La IA ha devuelto el JSON cortado. Prueba otra vez con la misma imagen.');
     }
+    parsed = enforceCatalogNames(parsed);
 
     stopLoadingAnimation();
+    isAnalyzing = false;
     document.getElementById('loading').style.display = 'none';
     setAtomxState('results');
     incrementCounter();
+    lastAnalysis = parsed;
     renderResults(parsed);
 
   } catch (err) {
     stopLoadingAnimation();
+    isAnalyzing = false;
     document.getElementById('loading').style.display = 'none';
     document.getElementById('analyze-btn').disabled = false;
     setAtomxState('error');
@@ -1102,125 +3117,501 @@ Responde SOLO JSON sin texto extra ni backticks:
   }
 }
 
-// ── BUSCAR PRECIO EN CATÁLOGO LOCAL ────────────────────────────────────
+// â”€â”€ BUSCAR PRECIO EN CATÃLOGO LOCAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buscarPrecio(nombreTinta) {
-  for (const cat of Object.values(catalogo)) {
-    const found = cat.find(t => t.nombre.toLowerCase().includes(nombreTinta.toLowerCase().replace('eternal ', '')));
-    if (found) return found.precio;
-  }
-  return 19.51;
+  const found = selectedBrandMode === 'MIXTO'
+    ? findCatalogItem(nombreTinta)
+    : findCatalogItemWithBrand(nombreTinta, selectedBrandMode);
+  return found?.precio || 19.51;
 }
 
-// ── RENDER RESULTS ─────────────────────────────────────────────────────
+function formatMarca(marca = '') {
+  const m = String(marca || '').toUpperCase();
+  if (m === 'VICE_COLORS') return 'VICE COLORS';
+  if (m === 'HYPE_INK') return 'HYPE INK';
+  return m || 'CATALOGO';
+}
+
+function normalizeStyleName(style = '') {
+  const s = normalizeText(style);
+  if (!s) return 'generico';
+  if (s.includes('realismo') && (s.includes('color') || s.includes('colour'))) return 'realismo_color';
+  if ((s.includes('realismo') || s.includes('realistic') || s.includes('portrait')) && (s.includes('black') || s.includes('grey') || s.includes('gray') || s.includes('gris'))) return 'realismo_black_grey';
+  if (s.includes('traditional') || s.includes('tradicional') || s.includes('old school')) return 'tradicional';
+  if (s.includes('neo traditional') || s.includes('neotradicional') || s.includes('neo-traditional')) return 'neotradicional';
+  if (s.includes('anime') || s.includes('new school') || s.includes('cartoon') || s.includes('manga')) return 'anime_newschool';
+  return 'generico';
+}
+
+const styleBrandPriority = {
+  realismo_color: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'HYPE_INK', 'ALLEGORY', 'ETERNAL'],
+    blanca: ['RADIANT', 'VICE_COLORS', 'VICE', 'ETERNAL', 'DYNAMIC'],
+    color: ['RADIANT', 'ETERNAL', 'VICE_COLORS', 'DERMAGLO'],
+  },
+  realismo_black_grey: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'HYPE_INK', 'ALLEGORY', 'ETERNAL'],
+    blanca: ['RADIANT', 'VICE_COLORS', 'VICE', 'DYNAMIC', 'ETERNAL'],
+    color: ['ETERNAL', 'RADIANT'],
+  },
+  tradicional: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'HYPE_INK', 'ALLEGORY', 'ETERNAL'],
+    blanca: ['DYNAMIC', 'RADIANT', 'VICE_COLORS', 'VICE', 'ETERNAL'],
+    color: ['DERMAGLO', 'VICE_COLORS', 'ETERNAL', 'RADIANT'],
+  },
+  neotradicional: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'ALLEGORY', 'HYPE_INK', 'ETERNAL'],
+    blanca: ['RADIANT', 'VICE_COLORS', 'VICE', 'DYNAMIC', 'ETERNAL'],
+    color: ['ETERNAL', 'VICE_COLORS', 'RADIANT', 'DERMAGLO'],
+  },
+  anime_newschool: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'ALLEGORY', 'ETERNAL'],
+    blanca: ['RADIANT', 'VICE_COLORS', 'VICE', 'DYNAMIC', 'ETERNAL'],
+    color: ['VICE_COLORS', 'RADIANT', 'ETERNAL', 'DERMAGLO'],
+  },
+  generico: {
+    negra: ['VICE_COLORS', 'DYNAMIC', 'HYPE_INK', 'ALLEGORY', 'ETERNAL'],
+    blanca: ['RADIANT', 'VICE_COLORS', 'VICE', 'DYNAMIC', 'ETERNAL'],
+    color: ['ETERNAL', 'RADIANT', 'VICE_COLORS', 'DERMAGLO'],
+  },
+};
+
+function scoreBrandForStyle(styleKey, categoria, marca) {
+  const m = String(marca || '').toUpperCase();
+  const cat = String(categoria || 'color').toLowerCase();
+  const priority = styleBrandPriority[styleKey] || styleBrandPriority.generico;
+  const list = priority[cat] || priority.color;
+  const idx = list.indexOf(m);
+  if (idx === -1) return 0;
+  return Math.max(1, 10 - idx * 2);
+}
+
+function scoreStudioKnowledge(item, requestedName = '', categoria = '', styleKey = 'generico', functionHint = '') {
+  if (!item) return 0;
+
+  const name = normalizeText(item.nombre || '');
+  const brand = String(item.marca || '').toUpperCase();
+  const cat = String(categoria || item.categoria || 'color').toLowerCase();
+  const request = normalizeText(requestedName || '');
+  const fn = normalizeText(functionHint || '');
+  let score = 0;
+
+  if (cat === 'negra') {
+    if (fn.includes('linea') || fn.includes('line') || request.includes('linea fina') || request.includes('lining') || request.includes('fine line')) {
+      if (brand === 'DYNAMIC' && name.includes('black') && !name.includes('triple')) score += 12;
+      if (name.includes('triple')) score -= 5;
+    }
+
+    if (fn.includes('relleno') || fn.includes('packing') || fn.includes('blackwork') || request.includes('blackwork') || request.includes('relleno')) {
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 12;
+      if (brand === 'ALLEGORY') score += 9;
+      if (brand === 'DYNAMIC' && name.includes('triple')) score += 7;
+      if (brand === 'RADIANT') score += 4;
+    }
+
+    if (fn.includes('sombra') || fn.includes('transicion') || fn.includes('wash') || fn.includes('grey') || request.includes('greywash') || request.includes('wash') || request.includes('dilucion')) {
+      if (brand === 'DYNAMIC') score += 10;
+      if (brand === 'HYPE_INK') score += 9;
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 2;
+    }
+
+    if (brand === 'VICE_COLORS' || brand === 'VICE') score += 3;
+    if (brand === 'DYNAMIC') score += 2;
+  }
+
+  if (cat === 'blanca') {
+    if (styleKey === 'realismo_color' || styleKey === 'realismo_black_grey' || fn.includes('luz') || request.includes('highlight') || request.includes('realismo')) {
+      if (brand === 'RADIANT' && name.includes('super white')) score += 14;
+      if ((brand === 'VICE_COLORS' || brand === 'VICE') && name.includes('white')) score += 10;
+      if (name.includes('nuclear white')) score += 7;
+    }
+
+    if (fn.includes('mezcla') || fn.includes('aclarar') || request.includes('mix') || request.includes('mezcla')) {
+      if (brand === 'DYNAMIC' && name.includes('white')) score += 12;
+    }
+
+    if (styleKey === 'tradicional') {
+      if (brand === 'DYNAMIC' && name.includes('white')) score += 8;
+      if (name.includes('nuclear white')) score += 7;
+      if (brand === 'DERMAGLO') score += 6;
+    }
+
+    if (selectedSkin >= 4) {
+      score -= 4;
+      if (name.includes('super white') || name.includes('nuclear white')) score += 1;
+    }
+  }
+
+  if (cat === 'color') {
+    if (styleKey === 'tradicional' && brand === 'DERMAGLO') score += 12;
+    if (styleKey === 'realismo_color') {
+      if (brand === 'RADIANT') score += 10;
+      if (brand === 'ETERNAL') score += 7;
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 5;
+    }
+    if (styleKey === 'anime_newschool') {
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 10;
+      if (brand === 'RADIANT') score += 7;
+      if (brand === 'ETERNAL') score += 5;
+    }
+    if (styleKey === 'neotradicional') {
+      if (brand === 'ETERNAL') score += 9;
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 6;
+      if (brand === 'RADIANT') score += 5;
+      if (brand === 'DERMAGLO') score += 3;
+    }
+    if (styleKey === 'generico') {
+      if (brand === 'ETERNAL') score += 8;
+      if (brand === 'RADIANT') score += 6;
+      if (brand === 'VICE_COLORS' || brand === 'VICE') score += 4;
+    }
+
+    if ((request.includes('rojo') || request.includes('red')) && brand === 'ETERNAL' && (name.includes('lipstick red') || name.includes('deep red') || name.includes('crimson red'))) score += 6;
+    if ((request.includes('rojo') || request.includes('red')) && (brand === 'VICE_COLORS' || brand === 'VICE') && name.includes('revenge')) score += 5;
+    if ((request.includes('amarillo') || request.includes('yellow')) && brand === 'ETERNAL' && name.includes('lightning yellow')) score += 6;
+
+    if (selectedSkin >= 4) {
+      if (name.includes('light') || name.includes('pastel') || name.includes('white') || name.includes('mint') || name.includes('shell')) score -= 6;
+      if (name.includes('yellow')) score -= 5;
+      if (name.includes('dark') || name.includes('deep') || name.includes('brown') || name.includes('red') || name.includes('green') || name.includes('blue')) score += 2;
+    }
+
+    if (selectedSkin === 3) {
+      if (name.includes('yellow') || name.includes('light') || name.includes('pastel')) score -= 2;
+    }
+  }
+
+  return score;
+}
+
+function listCandidatesForReference(nombreTinta = '') {
+  const target = normalizeText(nombreTinta);
+  if (!target) return [];
+  const items = flattenCatalog();
+  const relaxed = target.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, '');
+  return items.filter((item) => {
+    const current = normalizeText(item.nombre);
+    return current === target ||
+      current.includes(relaxed) ||
+      relaxed.includes(current.replace(/^(eternal|dynamic|allegory|radiant|vice|dermaglo|hype)\s+/, ''));
+  });
+}
+
+function chooseBestCatalogItem(nombreTinta = '', categoria = '', styleKey = 'generico', preferredSku = '', functionHint = '') {
+  const bySku = preferredSku ? findCatalogItemBySku(preferredSku, 'MIXTO') : null;
+  if (bySku) return bySku;
+
+  const candidates = listCandidatesForReference(nombreTinta);
+  if (!candidates.length) return null;
+
+  return candidates
+    .map((item) => ({
+      item,
+      score:
+        scoreBrandForStyle(styleKey, categoria || item.categoria, item.marca) +
+        scoreStudioKnowledge(item, nombreTinta, categoria || item.categoria, styleKey, functionHint) +
+        (String(item.categoria || '').toLowerCase() === String(categoria || '').toLowerCase() ? 4 : 0) +
+        (item.stock == null ? 0 : item.stock > 0 ? 2 : -1),
+    }))
+    .sort((a, b) => b.score - a.score || String(a.item.nombre).localeCompare(String(b.item.nombre)))[0]?.item || null;
+}
+
+function buildCatalogPromptList(mode = 'MIXTO') {
+  const filtered = flattenCatalog().filter((item) => promptBrandAccepts(item, mode));
+
+  return filtered
+    .filter((item) => item?.nombre)
+    .sort((a, b) => {
+      const byBrand = formatMarca(a.marca).localeCompare(formatMarca(b.marca));
+      if (byBrand !== 0) return byBrand;
+      const byCat = String(a.categoria || '').localeCompare(String(b.categoria || ''));
+      if (byCat !== 0) return byCat;
+      return String(a.nombre || '').localeCompare(String(b.nombre || ''));
+    })
+    .map((item) => `- SKU:${item.referencia || 'SIN-SKU'} | MARCA:${formatMarca(item.marca)} | CAT:${String(item.categoria || '').toUpperCase()} | NOMBRE:${item.nombre}`)
+    .join('\n');
+}
+
+function buildAlternativeCatalogPromptList(mode = selectedBrandMode) {
+  if (mode === 'MIXTO') return '';
+  return flattenCatalog()
+    .filter((item) => item?.nombre && shouldRespectSelectedBrand(item.categoria) && !brandAccepts(item.marca, mode))
+    .sort((a, b) => {
+      const byCat = String(a.categoria || '').localeCompare(String(b.categoria || ''));
+      if (byCat !== 0) return byCat;
+      const byBrand = formatMarca(a.marca).localeCompare(formatMarca(b.marca));
+      if (byBrand !== 0) return byBrand;
+      return String(a.nombre || '').localeCompare(String(b.nombre || ''));
+    })
+    .map((item) => `- SKU:${item.referencia || 'SIN-SKU'} | MARCA:${formatMarca(item.marca)} | CAT:${String(item.categoria || '').toUpperCase()} | NOMBRE:${item.nombre}`)
+    .join('\n');
+}
+
+function normalizeRecommendedInkName(rawName, resolvedItem) {
+  if (resolvedItem?.nombre) return resolvedItem.nombre;
+  return rawName || '';
+}
+
+function resolveInkForUI(nombreTinta, categoriaEsperada = '', preferredSku = '', styleKey = 'generico', functionHint = '') {
+  const respectBrand = shouldRespectSelectedBrand(categoriaEsperada);
+  // 1) Intento dentro del modo elegido
+  const preferredBySku = preferredSku
+    ? findCatalogItemBySku(preferredSku, respectBrand ? selectedBrandMode : 'MIXTO')
+    : null;
+  const preferred = preferredBySku || (!respectBrand
+    ? chooseBestCatalogItem(nombreTinta, categoriaEsperada, styleKey, preferredSku, functionHint)
+    : findCatalogItemWithBrand(nombreTinta, selectedBrandMode, categoriaEsperada));
+
+  if (!respectBrand) {
+    return { item: preferred, note: '' };
+  }
+
+  if (preferred) {
+    return { item: preferred, note: '' };
+  }
+
+  // 2) Si no existe en esa marca, busco en todo el catalogo y aviso
+  const fallback = (preferredSku ? findCatalogItemBySku(preferredSku, 'MIXTO') : null) || chooseBestCatalogItem(nombreTinta, categoriaEsperada, styleKey, preferredSku, functionHint);
+  const categoria = fallback?.categoria || categoriaEsperada || '';
+  const brandLabel = brandInfo[selectedBrandMode]?.label || selectedBrandMode;
+  const alternatives = listBrandsForCategory(categoria)
+    .filter((b) => !brandAccepts(b, selectedBrandMode))
+    .slice(0, 3)
+    .map(formatMarca)
+    .join(', ');
+
+  const note = `No existe en ${brandLabel}. Mira: ${alternatives || 'otra marca'}.`;
+  return { item: fallback, note };
+}
+
+function enforceCatalogNames(data) {
+  const next = structuredClone(data || {});
+  const styleKey = normalizeStyleName(next.estilo || '');
+  next.tintas_recomendadas = (next.tintas_recomendadas || []).map((t) => {
+    const r1 = resolveInkForUI(t.opcion1?.tinta || '', t.categoria || '', t.opcion1?.sku || '', styleKey, t.funcion || '');
+    const r2 = resolveInkForUI(t.opcion2?.tinta || '', t.categoria || '', t.opcion2?.sku || '', styleKey, t.funcion || '');
+    const advertencias = [t.advertencia || '', r1.note || '', r2.note || ''];
+
+    if (selectedSkin >= 4 && t.categoria === 'blanca') {
+      advertencias.push('En piel oscura el blanco puede perder mucha presencia.');
+    }
+    if (selectedSkin >= 4 && t.categoria === 'color' && /yellow|amarillo|light|pastel|white/i.test(String(t.color_base || ''))) {
+      advertencias.push('Ojo: en piel oscura los tonos claros o amarillos pueden perderse.');
+    }
+
+    return {
+      ...t,
+      advertencia: advertencias.filter(Boolean).join(' '),
+      opcion1: {
+        ...(t.opcion1 || {}),
+        tinta: normalizeRecommendedInkName(t.opcion1?.tinta || '', r1.item),
+        sku: r1.item?.referencia || t.opcion1?.sku || '',
+      },
+      opcion2: {
+        ...(t.opcion2 || {}),
+        tinta: normalizeRecommendedInkName(t.opcion2?.tinta || '', r2.item),
+        sku: r2.item?.referencia || t.opcion2?.sku || '',
+      },
+    };
+  });
+  return next;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function buildColorMapHtml(data) {
+  const detected = (data.colores_detectados || []).slice(0, 8);
+  const targets = (data.tintas_recomendadas || [])
+    .map((item) => ({
+      name: item.color_base || item.opcion1?.tinta || 'Tinta',
+      hex: item.hex_objetivo || '#999999',
+      role: item.funcion || 'target',
+    }))
+    .filter((item) => /^#?[0-9a-f]{6}$/i.test(String(item.hex || '').replace('#', '')))
+    .slice(0, 8);
+
+  const dots = [
+    ...detected.map((item) => ({ type: 'detected', name: item.nombre || 'Detectado', hex: item.hex, meta: `${item.porcentaje || 0}%` })),
+    ...targets.map((item) => ({ type: 'target', name: item.name, hex: item.hex, meta: item.role })),
+  ].map((item) => {
+    const hex = item.hex.startsWith('#') ? item.hex : `#${item.hex}`;
+    const rgb = hex.match(/[0-9a-f]{2}/gi)?.map((v) => parseInt(v, 16)) || [128, 128, 128];
+    const [h, s, l] = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+    const left = clamp((h / 360) * 100, 3, 97);
+    const top = clamp(100 - l, 6, 94);
+    return `<button class="map-dot ${item.type}" style="left:${left}%;top:${top}%;background:${hex}" title="${item.name} · ${hex} · ${item.meta}" type="button"></button>`;
+  }).join('');
+
+  return `
+    <div class="section-title">Mapa de color</div>
+    <div class="map-legend">
+      <span class="map-pill"><span class="map-pill-dot" style="background:#ffffff;border:1px solid #0a0a0a"></span>Colores detectados</span>
+      <span class="map-pill"><span class="map-pill-dot" style="background:var(--accent)"></span>Tintas objetivo</span>
+    </div>
+    <div class="color-map">${dots}</div>
+    <div class="color-map-axis">
+      <span>TONO</span>
+      <span>CLARO / OSCURO</span>
+      <span>SATURACION VISUAL</span>
+    </div>`;
+}
+
+function bindInteractiveColorMap() {
+  const dots = [...document.querySelectorAll('.map-dot')];
+  if (!dots.length) return;
+
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const targetName = String(dot.getAttribute('title') || '').split(' · ')[0].trim().toLowerCase();
+      setActiveVisualTarget(targetName);
+    });
+  });
+}
+
+// â”€â”€ RENDER RESULTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderResults(data) {
   const skin = skinInfo[selectedSkin];
+  const styleKey = normalizeStyleName(data.estilo || '');
+  selectedInkChoices = new Map();
   let html = '';
 
-  // Estilo detectado
-  if (data.estilo) {
-    html += `
-      <div class="skin-alert" style="border-color:rgba(255,77,0,0.3);background:rgba(255,77,0,0.08)">
-        <div class="skin-alert-icon">🎨</div>
-        <div class="skin-alert-text"><strong>Estilo: ${data.estilo}</strong>${data.descripcion_estilo ? ' — ' + data.descripcion_estilo : ''}</div>
-      </div>`;
-  }
-
-  // Consejo de piel
-  if (data.consejo_piel) {
-    html += `
-      <div class="skin-alert">
-        <div class="skin-alert-icon">💡</div>
-        <div class="skin-alert-text"><strong>Piel ${skin.nombre}:</strong> ${data.consejo_piel}</div>
-      </div>`;
-  }
-
-  // Colores detectados
   if (data.colores_detectados && data.colores_detectados.length) {
-    html += `<div class="section-title">🎨 Colores en el diseño</div>`;
+    html += `<div class="section-title">Colores en el diseno</div>`;
     html += `<div class="colors-grid">`;
     data.colores_detectados.forEach(c => {
+      const warning = selectedSkin >= 4 && /yellow|amarillo|light|pastel|white/i.test(String(c.nombre || ''))
+        ? `En piel ${skin.nombre.toLowerCase()} este tono puede perder mucha presencia.`
+        : '';
       html += `
-        <div class="color-swatch">
+        <div class="color-swatch" data-color-name="${c.nombre || ''}">
           <div class="swatch-color" style="background:${c.hex}"></div>
           <div class="swatch-info">
             <div class="swatch-name">${c.nombre}</div>
             <div class="swatch-hex">${c.hex}</div>
             <div class="swatch-pct">${c.porcentaje}%</div>
+            ${warning ? `<div class="swatch-pct" style="color:#ffd600;line-height:1.4;margin-top:4px">${warning}</div>` : ''}
           </div>
         </div>`;
     });
     html += `</div>`;
   }
 
-  // Tintas — dos opciones por color
-  html += `<div class="section-title">📦 Tintas recomendadas</div>`;
+  html += `<div class="section-title">Tintas recomendadas</div>`;
   let totalMin = 0;
-  data.tintas_recomendadas.forEach(t => {
+  (data.tintas_recomendadas || []).forEach((t, index) => {
     const hasWarning = t.advertencia && t.advertencia.length > 3;
-    const precio1 = buscarPrecio(t.opcion1?.tinta || '');
-    const precio2 = buscarPrecio(t.opcion2?.tinta || '');
-    totalMin += precio1;
+    const options = buildUiInkCandidates(t, styleKey);
+    if (options[0]?.precio) totalMin += Number(options[0].precio || 0);
     html += `
-      <div class="tinta-card">
+      <div class="tinta-card" id="tinta-card-${index}" data-color-base="${t.color_base || ''}">
         <div class="tinta-header">
           <div class="tinta-left">
             <div class="tinta-color-dot" style="background:${t.hex_objetivo || '#888'}"></div>
             <div>
               <div class="tinta-nombre">${t.color_base}</div>
-              <div class="tinta-marca">${t.zona ? '📍 ' + t.zona : ''}${t.funcion ? ' · <span style="color:#ffd600;font-size:10px">' + t.funcion.toUpperCase() + '</span>' : ''}</div>
+              <div class="tinta-marca">${t.funcion ? `<span style="color:#ffd600;font-size:10px">${t.funcion.toUpperCase()}</span>` : ''}</div>
             </div>
           </div>
         </div>
-        ${hasWarning ? `<div style="font-size:11px;color:#ffd600;margin:4px 0 8px;line-height:1.4">⚠️ ${t.advertencia}</div>` : ''}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-          <div style="background:rgba(255,77,0,0.1);border:1px solid rgba(255,77,0,0.25);border-radius:10px;padding:10px">
-            <div style="font-size:9px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:4px">OPCIÓN 1</div>
-            <div style="font-size:13px;font-weight:700;line-height:1.3">${t.opcion1?.tinta || '-'}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.opcion1?.razon || ''}</div>
-            <div style="font-size:14px;font-weight:700;color:var(--accent);margin-top:6px">${precio1.toFixed(2)}€</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:10px">
-            <div style="font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:4px">OPCIÓN 2</div>
-            <div style="font-size:13px;font-weight:700;line-height:1.3">${t.opcion2?.tinta || '-'}</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:4px">${t.opcion2?.razon || ''}</div>
-            <div style="font-size:14px;font-weight:700;color:var(--muted);margin-top:6px">${precio2.toFixed(2)}€</div>
-          </div>
+        ${hasWarning ? `<div style="font-size:11px;color:#ffd600;margin:4px 0 8px;line-height:1.4">Aviso: ${t.advertencia}</div>` : ''}
+        <div class="tinta-select-grid">
+          ${options.map((option, optionIndex) => {
+            const precio = Number(option?.precio || 0);
+            const stock = option?.stock == null ? '' : ` | stock ${option.stock}`;
+            const meta = option?.categoria ? `${formatMarca(option?.marca)} / ${option.categoria.toUpperCase()}${stock}` : `${formatMarca(option?.marca)}${stock}`;
+            const key = makeInkSelectionKey(option, `${t.color_base || 'color'}-${optionIndex}-${index}`);
+            const checkboxId = `check-${key}-${optionIndex + 1}-${index}`;
+            const reason = optionIndex === 0
+              ? (t.opcion1?.razon || 'La opcion que mas encaja con el uso, el estilo y la piel.')
+              : optionIndex === 1
+              ? (t.opcion2?.razon || 'Alternativa potente si quieres variar tono o comportamiento.')
+              : 'Tercera via util por catalogo real para comparar antes de comprar.';
+            return `
+              <div class="tinta-option ${optionIndex === 0 ? 'primary' : ''}" onclick="toggleInkOptionCard('${checkboxId}')">
+                <div style="font-size:9px;color:${optionIndex === 0 ? 'var(--accent)' : 'var(--muted)'};font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:4px">OPCION ${optionIndex + 1}</div>
+                <div class="tinta-real">${option?.nombre || '-'}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:4px">${reason}</div>
+                <div class="tinta-meta-line">${meta}${option?.referencia ? ` / SKU ${option.referencia}` : ''}</div>
+                <div style="font-size:14px;font-weight:700;color:${optionIndex === 0 ? 'var(--accent)' : 'var(--muted)'};margin-top:6px">${precio.toFixed(2)}EUR</div>
+                <div class="tinta-check">
+                  <input
+                    id="${checkboxId}"
+                    type="checkbox"
+                    data-key="${escapeHtml(key)}"
+                    data-name="${escapeHtml(option?.nombre || '')}"
+                    data-brand="${escapeHtml(formatMarca(option?.marca || ''))}"
+                    data-sku="${escapeHtml(option?.referencia || '')}"
+                    data-price="${precio}"
+                    data-link="${escapeHtml(option?.link || '')}"
+                    data-cart-link="${escapeHtml(option?.cartLink || '')}"
+                    data-color-base="${escapeHtml(t.color_base || '')}"
+                    data-category="${escapeHtml(option?.categoria || t.categoria || '')}"
+                    onchange="toggleInkSelection(this)"
+                    onclick="event.stopPropagation()"
+                  >
+                  <label for="${checkboxId}" onclick="event.stopPropagation()">Seleccionar esta tinta para compra/exportacion.</label>
+                </div>
+              </div>`;
+          }).join('')}
         </div>
-        <button class="comprar-btn" onclick="window.open('https://atomxsupply.com','_blank')">
-          VER EN ATOMXSUPPLY.COM →
-        </button>
       </div>`;
   });
 
-  // Resumen
   html += `
     <div class="resumen-card">
-      <div class="resumen-title">💰 RESUMEN DEL PEDIDO</div>
-      ${data.tintas_recomendadas.map(t => `
-        <div class="resumen-row">
-          <span style="color:var(--muted)">${t.color_base}</span>
-          <span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)">Op.1: ${t.opcion1?.tinta || '-'}</span>
-        </div>`).join('')}
-      <div class="resumen-total">
-        <span>TOTAL ESTIMADO (op.1)</span>
-        <span>${totalMin.toFixed(2)}€</span>
+      <div class="resumen-title">RESUMEN DE ANALISIS</div>
+      <div id="analysis-summary-body">
+        ${(data.tintas_recomendadas || []).map(t => `
+          <div class="resumen-row">
+            <span style="color:var(--muted)">${t.color_base}</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted)">Marca los checks que realmente vas a usar</span>
+          </div>`).join('')}
       </div>
+      <div class="resumen-total">
+        <span>Total seleccionado</span>
+        <span id="analysis-summary-total">0.00EUR</span>
+      </div>
+      <div class="selection-tools">
+        <button class="selection-btn" type="button" onclick="copySelectedInkList()">Copiar seleccion</button>
+        <button class="selection-btn" type="button" onclick="openSelectedInkLinks()">Exportar a Atom</button>
+      </div>
+      <div class="selection-summary" id="selection-summary">Selecciona las tintas que te cuadren y te preparo una salida limpia para compra manual o para abrirlas en tu tienda.</div>
     </div>`;
 
-  html += `<button class="reset-btn" onclick="resetApp()">↩ ANALIZAR OTRO DISEÑO</button>`;
+  html += `
+    <details class="learn-more">
+      <summary>SABER MAS</summary>
+      <div class="learn-more-body">
+        ${data.consejo_piel ? `<div class="learn-more-copy"><strong>Piel ${skin.nombre}:</strong> ${data.consejo_piel}</div>` : ''}
+        ${data.estilo ? `<div class="learn-more-copy"><strong>Lectura del diseno:</strong> ${data.estilo}${data.descripcion_estilo ? ` · ${data.descripcion_estilo}` : ''}</div>` : ''}
+      </div>
+    </details>`;
+
+  html += `<button class="reset-btn" onclick="resetApp()">REINICIAR ANALISIS</button>`;
 
   const resultsEl = document.getElementById('results');
   resultsEl.innerHTML = html;
   resultsEl.style.display = 'block';
   document.getElementById('analyze-btn').style.display = 'none';
+  renderPreviewMarkers(extractedColors, data.tintas_recomendadas || []);
+  updateSelectionSummary();
   resultsEl.scrollIntoView({ behavior:'smooth' });
 }
-
-// ── RESET ──────────────────────────────────────────────────────────────
 function resetApp() {
+  isAnalyzing = false;
+  if (brandChangeTimer) clearTimeout(brandChangeTimer);
+  lastAnalysis = null;
   imageBase64 = null;
+  selectedInkChoices = new Map();
+  currentHexMatches = [];
+  clearPaletteSamples();
+  document.getElementById('preview-controls')?.classList.remove('open');
+  resetPreviewTransform();
   document.getElementById('preview-img').style.display = 'none';
   document.getElementById('preview-img').src = '';
+  document.getElementById('preview-overlay').innerHTML = '';
   document.getElementById('upload-placeholder').style.display = 'block';
   document.getElementById('upload-zone').classList.remove('has-image');
   unlockSkinSelector();
@@ -1232,6 +3623,9 @@ function resetApp() {
   setAtomxState('idle');
   window.scrollTo({ top:0, behavior:'smooth' });
 }
+
+bootAccess();
 </script>
 </body>
 </html>
+
